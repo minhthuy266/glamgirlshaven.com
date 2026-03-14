@@ -18,6 +18,19 @@
   --color-text-dark: #EAE4E5;
   --color-border-light: #F2EBEB;
   --color-border-dark: rgba(255, 255, 255, 0.08);
+
+  --animate-slow-zoom: slowZoom 20s infinite alternate;
+  --animate-fade-in-up: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slowZoom {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.1); }
+}
+
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 @layer base {
@@ -104,95 +117,200 @@
     @apply inline-block px-12 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-primary dark:hover:bg-primary font-semibold rounded-none transition-all duration-300 no-underline text-center w-max uppercase tracking-[0.2em] text-[11px];
   }
 
-  /* Ghost Koenig Card Styles */
-  .ghost-content .kg-card {
-    @apply my-8;
+  /* Ghost Koenig Card Styles adapted from thedecor */
+  .gh-content {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    color: var(--color-text-light);
+    line-height: 1.8;
+    font-size: 1.05rem;
+    max-width: 100%;
+    overflow-wrap: break-word;
   }
-  .ghost-content .kg-image-card img {
-    @apply rounded-2xl shadow-sm w-full h-auto;
-  }
-  .ghost-content figcaption {
-    @apply text-center text-sm text-gray-500 dark:text-gray-400 mt-3 italic;
+  .dark .gh-content {
+    color: var(--color-text-dark);
   }
   
-  /* Ghost Gallery Card */
-  .ghost-content .kg-gallery-container {
-    @apply flex flex-col gap-4;
+  .gh-content h1, .gh-content h2, .gh-content h3,
+  .gh-content h4, .gh-content h5, .gh-content h6 {
+    font-family: var(--font-serif);
+    color: var(--color-text-light);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+    text-transform: uppercase;
+    scroll-margin-top: 100px !important;
   }
-  .ghost-content .kg-gallery-row {
-    @apply flex flex-row justify-center gap-4;
+  .dark .gh-content h1, .dark .gh-content h2, .dark .gh-content h3,
+  .dark .gh-content h4, .dark .gh-content h5, .dark .gh-content h6 {
+    color: var(--color-text-dark);
   }
-  .ghost-content .kg-gallery-image img {
-    @apply w-full h-full object-cover rounded-xl m-0;
+  
+  @media (min-width: 768px) {
+    .gh-content h1, .gh-content h2, .gh-content h3 {
+      scroll-margin-top: 120px !important;
+    }
+  }
+  
+  .gh-content h2 {
+    font-size: 1.5rem;
+    border-bottom: 1px solid var(--color-border-light);
+    padding-bottom: 0.5rem;
+  }
+  .dark .gh-content h2 {
+    border-bottom: 1px solid var(--color-border-dark);
+  }
+  
+  .gh-content h3 { font-size: 1.25rem; }
+  .gh-content p { margin-bottom: 1.5rem; }
+  
+  /* --- PRODUCT CARD STYLES --- */
+  .gh-content .kg-product-card {
+    background: var(--color-bg-light);
+    border: 1px solid var(--color-border-light);
+    border-radius: 2px;
+    margin: 2.5rem 0;
+    width: 100%;
+    overflow: hidden;
+  }
+  .dark .gh-content .kg-product-card {
+    background: var(--color-bg-dark);
+    border: 1px solid var(--color-border-dark);
+  }
+  
+  .gh-content .kg-product-card-container {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1rem;
+    min-height: 480px;
+  }
+  
+  @media (min-width: 768px) {
+    .gh-content .kg-product-card-container {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      grid-template-rows: auto auto 1fr auto;
+      column-gap: 2.5rem;
+      row-gap: 0.5rem;
+      padding: 2.5rem;
+      min-height: 340px;
+    }
+  }
+  
+  .gh-content .kg-product-card-image {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    background: #f5f5f4;
+    border-radius: 1px;
+    margin: 0 !important;
+  }
+  .dark .gh-content .kg-product-card-image {
+    background: #2a2a2a;
+  }
+  
+  @media (min-width: 768px) {
+    .gh-content .kg-product-card-image {
+      grid-column: 1;
+      grid-row: 1 / span 4;
+      height: 280px;
+    }
+  }
+  
+  .gh-content .kg-product-card-title {
+    font-family: var(--font-serif) !important;
+    font-size: 1.25rem !important;
+    font-weight: 400 !important;
+    margin: 0 !important;
+    color: var(--color-text-light) !important;
+    line-height: 1.3 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+  .dark .gh-content .kg-product-card-title {
+    color: var(--color-text-dark) !important;
+  }
+  
+  .gh-content .kg-product-card-description {
+    font-size: 0.95rem;
+    color: #57534e;
+    line-height: 1.6;
+    margin-top: 0.5rem;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+  .dark .gh-content .kg-product-card-description {
+    color: #a3a3a3;
+  }
+  
+  .gh-content .kg-product-card-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #111110 !important;
+    color: #fff !important;
+    height: 48px;
+    padding: 0 1.5rem;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    text-decoration: none !important;
+    border-radius: 1px;
+    margin-top: auto;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+  .dark .gh-content .kg-product-card-button {
+    background: #fff !important;
+    color: #111110 !important;
+  }
+  
+  @media (min-width: 768px) {
+    .gh-content .kg-product-card-button { width: 220px !important; }
+  }
+  
+  /* --- PRODUCT SLIDER --- */
+  .gh-product-slider-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    margin: 2.5rem 0;
+  }
+  .gh-product-slider-wrapper::-webkit-scrollbar { display: none; }
+  .gh-product-slider-container {
+    display: flex;
+    gap: 1.5rem;
+    width: max-content;
+  }
+  .gh-product-slider-container .kg-product-card {
+    width: 340px;
+    flex-shrink: 0;
+    margin: 0 !important;
+  }
+  
+  .gh-content blockquote {
+    border-left: 2px solid var(--color-text-light);
+    padding-left: 1.5rem;
+    margin: 2.5rem 0;
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    color: var(--color-text-light);
+    line-height: 1.4;
+  }
+  .dark .gh-content blockquote {
+    border-left: 2px solid var(--color-text-dark);
+    color: var(--color-text-dark);
   }
 
-  /* Ghost Bookmark Card */
-  .ghost-content .kg-bookmark-card {
-    @apply w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow;
-  }
-  .ghost-content .kg-bookmark-container {
-    @apply flex flex-col-reverse sm:flex-row no-underline text-inherit hover:text-inherit;
-  }
-  .ghost-content .kg-bookmark-content {
-    @apply flex flex-col p-5 flex-grow justify-center;
-  }
-  .ghost-content .kg-bookmark-title {
-    @apply font-bold text-lg text-gray-900 dark:text-white mb-2 line-clamp-2;
-  }
-  .ghost-content .kg-bookmark-description {
-    @apply text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-4 font-sans;
-  }
-  .ghost-content .kg-bookmark-metadata {
-    @apply flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 font-medium;
-  }
-  .ghost-content .kg-bookmark-icon {
-    @apply w-5 h-5 rounded-sm;
-  }
-  .ghost-content .kg-bookmark-thumbnail {
-    @apply sm:w-1/3 relative min-h-[160px] sm:min-h-0;
-  }
-  .ghost-content .kg-bookmark-thumbnail img {
-    @apply absolute inset-0 w-full h-full object-cover m-0 rounded-none;
-  }
-
-  /* Ghost Button Card */
-  .ghost-content .kg-button-card {
-    @apply flex justify-center my-10;
-  }
-  .ghost-content a.kg-btn {
-    @apply inline-block px-10 py-4 bg-primary hover:bg-primary-dark !text-white font-bold rounded-xl transition-all duration-300 !no-underline text-center shadow-md hover:shadow-lg hover:-translate-y-1;
-  }
-
-  /* Ghost Callout Card */
-  .ghost-content .kg-callout-card {
-    @apply flex gap-4 p-5 rounded-xl bg-primary/10 border border-primary/20 text-gray-800 dark:text-gray-200 my-8;
-  }
-  .ghost-content .kg-callout-emoji {
-    @apply text-2xl leading-none;
-  }
-  .ghost-content .kg-callout-text {
-    @apply text-base leading-relaxed;
-  }
-
-  /* Ghost Toggle Card */
-  .ghost-content .kg-toggle-card {
-    @apply border border-gray-200 dark:border-gray-700 rounded-xl p-5 my-6 bg-white dark:bg-gray-800;
-  }
-  .ghost-content .kg-toggle-heading {
-    @apply flex justify-between items-center cursor-pointer;
-  }
-  .ghost-content .kg-toggle-heading-text {
-    @apply text-lg font-bold m-0 text-gray-900 dark:text-white;
-  }
-  .ghost-content .kg-toggle-card-icon {
-    @apply w-6 h-6 flex items-center justify-center text-gray-500 transition-transform duration-300;
-  }
-  .ghost-content .kg-toggle-card[data-kg-toggle-state="open"] .kg-toggle-card-icon {
-    @apply rotate-180;
-  }
-  .ghost-content .kg-toggle-content {
-    @apply mt-4 text-gray-600 dark:text-gray-300 text-base leading-relaxed;
-  }
 
   /* Custom Scrollbar for TOC */
   .scrollbar-thin::-webkit-scrollbar {
