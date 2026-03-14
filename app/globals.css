@@ -1,0 +1,211 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  
+  /* Feminine Beauty Palette */
+  --color-primary: #B5838D; /* Dusty Rose */
+  --color-primary-dark: #8A5A63;
+  --color-primary-light: #E5D0D4;
+  --color-bg-light: #FDFBFB; /* Soft warm white */
+  --color-bg-dark: #1A1516;
+  --color-text-light: #4A3F41; /* Warm dark gray */
+  --color-text-dark: #EAE4E5;
+  --color-border-light: #F2EBEB;
+  --color-border-dark: rgba(255, 255, 255, 0.08);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    @apply transition-colors duration-300;
+  }
+  
+  html.dark {
+    color-scheme: dark;
+  }
+  
+  body {
+    @apply font-sans antialiased bg-bg-light text-text-light transition-colors duration-300 selection:bg-primary selection:text-white;
+  }
+  
+  .dark body {
+    @apply bg-bg-dark text-text-dark selection:bg-primary-light selection:text-gray-900;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif tracking-tight font-medium;
+  }
+}
+
+@layer components {
+  /* Luxury Vertical Rail Text */
+  .rail-text {
+    writing-mode: vertical-rl;
+    @apply text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400 dark:text-gray-500;
+  }
+
+  /* Elegant Thin Borders */
+  .border-elegant {
+    @apply border-b border-border-light dark:border-border-dark;
+  }
+
+  /* Editorial Typography Enhancements */
+  .editorial-content > p:first-of-type::first-letter {
+    @apply float-left text-7xl leading-[0.8] pr-4 pt-2 font-serif font-normal text-primary dark:text-primary-light;
+  }
+
+  .editorial-content h2, .editorial-content h3 {
+    @apply font-serif uppercase tracking-[0.15em] font-normal text-gray-900 dark:text-white pb-2 mb-6 mt-16 text-[22px] md:text-[26px];
+  }
+
+  .editorial-content p {
+    @apply font-sans font-light text-text-light dark:text-gray-300 text-[17px] md:text-[19px] leading-[1.8] mb-8;
+  }
+
+  .prose blockquote {
+    @apply border-none font-serif text-2xl md:text-3xl italic text-center my-16 py-12 text-gray-900 dark:text-white relative max-w-3xl mx-auto;
+  }
+  
+  .prose blockquote::before {
+    content: '“';
+    @apply absolute -top-8 left-1/2 -translate-x-1/2 text-8xl text-gray-200 dark:text-gray-800 font-serif;
+  }
+
+  .prose a {
+    @apply text-gray-900 dark:text-white font-medium underline underline-offset-4 decoration-gray-300 hover:decoration-gray-900 transition-all duration-300;
+  }
+
+  /* Luxury Product Card */
+  .product-card {
+    @apply flex flex-col md:flex-row gap-8 md:gap-16 p-0 my-16 bg-transparent items-center relative overflow-hidden;
+  }
+  .product-card::before {
+    display: none;
+  }
+  .product-card img {
+    @apply w-full md:w-1/2 h-auto object-cover rounded-none my-0 shadow-none bg-gray-50 dark:bg-gray-800 p-8 md:p-12;
+  }
+  .product-card .product-info {
+    @apply flex flex-col flex-grow text-left justify-center w-full md:w-1/2;
+  }
+  .product-card h3 {
+    @apply text-[22px] md:text-[26px] font-serif font-normal uppercase tracking-[0.1em] text-gray-900 dark:text-white mt-0 mb-4 leading-snug;
+  }
+  .product-card .price {
+    @apply text-xl font-light text-gray-500 mb-8 font-sans;
+  }
+  .product-card .buy-button {
+    @apply inline-block px-12 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-primary dark:hover:bg-primary font-semibold rounded-none transition-all duration-300 no-underline text-center w-max uppercase tracking-[0.2em] text-[11px];
+  }
+
+  /* Ghost Koenig Card Styles */
+  .ghost-content .kg-card {
+    @apply my-8;
+  }
+  .ghost-content .kg-image-card img {
+    @apply rounded-2xl shadow-sm w-full h-auto;
+  }
+  .ghost-content figcaption {
+    @apply text-center text-sm text-gray-500 dark:text-gray-400 mt-3 italic;
+  }
+  
+  /* Ghost Gallery Card */
+  .ghost-content .kg-gallery-container {
+    @apply flex flex-col gap-4;
+  }
+  .ghost-content .kg-gallery-row {
+    @apply flex flex-row justify-center gap-4;
+  }
+  .ghost-content .kg-gallery-image img {
+    @apply w-full h-full object-cover rounded-xl m-0;
+  }
+
+  /* Ghost Bookmark Card */
+  .ghost-content .kg-bookmark-card {
+    @apply w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow;
+  }
+  .ghost-content .kg-bookmark-container {
+    @apply flex flex-col-reverse sm:flex-row no-underline text-inherit hover:text-inherit;
+  }
+  .ghost-content .kg-bookmark-content {
+    @apply flex flex-col p-5 flex-grow justify-center;
+  }
+  .ghost-content .kg-bookmark-title {
+    @apply font-bold text-lg text-gray-900 dark:text-white mb-2 line-clamp-2;
+  }
+  .ghost-content .kg-bookmark-description {
+    @apply text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-4 font-sans;
+  }
+  .ghost-content .kg-bookmark-metadata {
+    @apply flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 font-medium;
+  }
+  .ghost-content .kg-bookmark-icon {
+    @apply w-5 h-5 rounded-sm;
+  }
+  .ghost-content .kg-bookmark-thumbnail {
+    @apply sm:w-1/3 relative min-h-[160px] sm:min-h-0;
+  }
+  .ghost-content .kg-bookmark-thumbnail img {
+    @apply absolute inset-0 w-full h-full object-cover m-0 rounded-none;
+  }
+
+  /* Ghost Button Card */
+  .ghost-content .kg-button-card {
+    @apply flex justify-center my-10;
+  }
+  .ghost-content a.kg-btn {
+    @apply inline-block px-10 py-4 bg-primary hover:bg-primary-dark !text-white font-bold rounded-xl transition-all duration-300 !no-underline text-center shadow-md hover:shadow-lg hover:-translate-y-1;
+  }
+
+  /* Ghost Callout Card */
+  .ghost-content .kg-callout-card {
+    @apply flex gap-4 p-5 rounded-xl bg-primary/10 border border-primary/20 text-gray-800 dark:text-gray-200 my-8;
+  }
+  .ghost-content .kg-callout-emoji {
+    @apply text-2xl leading-none;
+  }
+  .ghost-content .kg-callout-text {
+    @apply text-base leading-relaxed;
+  }
+
+  /* Ghost Toggle Card */
+  .ghost-content .kg-toggle-card {
+    @apply border border-gray-200 dark:border-gray-700 rounded-xl p-5 my-6 bg-white dark:bg-gray-800;
+  }
+  .ghost-content .kg-toggle-heading {
+    @apply flex justify-between items-center cursor-pointer;
+  }
+  .ghost-content .kg-toggle-heading-text {
+    @apply text-lg font-bold m-0 text-gray-900 dark:text-white;
+  }
+  .ghost-content .kg-toggle-card-icon {
+    @apply w-6 h-6 flex items-center justify-center text-gray-500 transition-transform duration-300;
+  }
+  .ghost-content .kg-toggle-card[data-kg-toggle-state="open"] .kg-toggle-card-icon {
+    @apply rotate-180;
+  }
+  .ghost-content .kg-toggle-content {
+    @apply mt-4 text-gray-600 dark:text-gray-300 text-base leading-relaxed;
+  }
+
+  /* Custom Scrollbar for TOC */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: var(--color-border-light);
+    border-radius: 20px;
+  }
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: var(--color-border-dark);
+  }
+}
