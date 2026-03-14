@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, ArrowUpRight, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ShoppingBag, ChevronLeft, ChevronRight, Shield, CheckCircle, Mail } from 'lucide-react';
 
 interface GhostPost {
   id: string;
@@ -39,6 +39,8 @@ export default function HomeClient({
 
   return (
     <main className="bg-bg-light dark:bg-bg-dark overflow-x-hidden transition-colors duration-300">
+      {/* Hero will be first for transparency */}
+
       {/* --- HERO SECTION --- */}
       <section className="relative w-full h-[80vh] md:h-[85vh] min-h-[500px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -64,22 +66,40 @@ export default function HomeClient({
               Curated <span className="font-light text-primary-light">Beauty</span>
             </h1>
             <p className="text-sm md:text-lg text-gray-100 font-normal max-w-lg mx-auto leading-relaxed mb-8 drop-shadow-md">
-              Luxury skincare, beauty finds, and wellness insights for the modern woman.
+              Curated beauty and wellness for the modern woman. We believe in intentional self-care, ethical products, and timeless elegance.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
-                href="/tag/beauty-finds"
+                href="/category/all"
                 className="w-full sm:w-auto bg-white text-text-light px-8 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-primary-light hover:text-text-light transition-colors"
               >
                 Shop Beauty Finds
               </Link>
               <Link
-                href="/tag/skincare"
+                href="/category/skincare"
                 className="w-full sm:w-auto bg-transparent border border-white text-white px-8 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-white hover:text-text-light transition-colors"
               >
                 Skincare Hacks
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- TRUST BAR (Moved below Hero) --- */}
+      <section className="bg-white dark:bg-bg-dark border-b border-border-light dark:border-border-dark py-6 transition-colors duration-300">
+        <div className="container mx-auto px-6 max-w-7xl flex flex-wrap justify-center gap-8 md:gap-16">
+          <div className="trust-item">
+            <Shield size={14} className="text-primary" />
+            <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400">Expert Recommended</span>
+          </div>
+          <div className="trust-item">
+            <CheckCircle size={14} className="text-primary" />
+            <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400">Unbiased Reviews</span>
+          </div>
+          <div className="trust-item hidden sm:flex">
+            <ShoppingBag size={14} className="text-primary" />
+            <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400">Tested & Verified</span>
           </div>
         </div>
       </section>
@@ -108,7 +128,7 @@ export default function HomeClient({
           >
             {amazonProducts.map((prod) => (
               <div key={prod.id} className="snap-center md:snap-start shrink-0 w-[160px] md:w-[260px] flex flex-col group select-none">
-                <Link href={`/${prod.slug}`} className="block relative aspect-[3/4] bg-gray-100 dark:bg-gray-800 mb-3 overflow-hidden rounded-sm cursor-pointer">
+                <Link href={`/post/${prod.slug}`} className="block relative aspect-[3/4] bg-gray-100 dark:bg-gray-800 mb-3 overflow-hidden rounded-sm cursor-pointer">
                   {prod.feature_image && (
                     <Image
                       src={prod.feature_image}
@@ -124,7 +144,7 @@ export default function HomeClient({
                   </div>
                 </Link>
                 <h4 className="font-serif text-sm md:text-base text-text-light dark:text-text-dark font-bold truncate pr-2 group-hover:text-primary transition-colors">
-                  <Link href={`/${prod.slug}`}>{prod.title}</Link>
+                  <Link href={`/post/${prod.slug}`}>{prod.title}</Link>
                 </h4>
                 <div className="flex justify-between items-center mt-1">
                   <span className="text-[9px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-bold">
@@ -137,7 +157,7 @@ export default function HomeClient({
               </div>
             ))}
             <Link
-              href="/tag/beauty-finds"
+              href="/category/all"
               className="snap-center md:snap-start shrink-0 w-[160px] md:w-[260px] flex flex-col items-center justify-center bg-bg-light dark:bg-bg-dark border border-border-light dark:border-border-dark text-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors aspect-[3/4] rounded-sm"
             >
               <span className="font-serif text-base md:text-lg text-text-light dark:text-text-dark mb-2">View All</span>
@@ -161,7 +181,7 @@ export default function HomeClient({
             {/* Featured wide card */}
             {hotPost && (
               <Link
-                href={`/${hotPost.slug}`}
+                href={`/post/${hotPost.slug}`}
                 className="lg:col-span-2 group relative h-[300px] md:h-[500px] overflow-hidden rounded-sm bg-gray-200 dark:bg-gray-800 block shadow-sm hover:shadow-lg transition-shadow"
               >
                 {hotPost.feature_image && (
@@ -191,7 +211,7 @@ export default function HomeClient({
               {organizationPosts.slice(0, 3).map((post) => (
                 <Link
                   key={post.id}
-                  href={`/${post.slug}`}
+                  href={`/post/${post.slug}`}
                   className="flex gap-4 items-center group bg-white dark:bg-gray-900 p-3 md:p-4 rounded-sm shadow-sm hover:shadow-md transition-shadow border border-border-light dark:border-border-dark"
                 >
                   <div className="relative w-16 h-16 md:w-20 md:h-20 bg-gray-200 dark:bg-gray-800 shrink-0 overflow-hidden rounded-sm">
@@ -212,7 +232,7 @@ export default function HomeClient({
                 </Link>
               ))}
               <Link
-                href="/tag/skincare"
+                href="/category/skincare"
                 className="mt-2 text-center text-[10px] font-bold uppercase tracking-widest text-text-light dark:text-text-dark border border-border-light dark:border-border-dark py-3 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors rounded-sm"
               >
                 More Skincare Hacks
@@ -222,15 +242,16 @@ export default function HomeClient({
         </div>
       </section>
 
+
       {/* --- SECTION 3: TRENDING NOW --- */}
-      <div className="container mx-auto px-6 md:px-8 max-w-7xl py-16 md:py-20 border-t border-border-light dark:border-border-dark">
+      <section className="container mx-auto px-6 md:px-8 max-w-7xl py-16 md:py-20 border-t border-border-light dark:border-border-dark">
         <div className="flex items-end justify-between mb-10 md:mb-12">
           <div>
             <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 dark:text-gray-400 mb-2 block">The Editorial</span>
             <h3 className="font-serif text-2xl md:text-4xl text-text-light dark:text-text-dark font-bold tracking-tight">Trending Now</h3>
           </div>
           <Link
-            href="/tag/all"
+            href="/category/all"
             className="hidden md:flex gap-2 text-[10px] font-bold tracking-widest uppercase text-gray-400 dark:text-gray-500 hover:text-text-light dark:hover:text-text-dark transition-colors items-center"
           >
             View Archive <ArrowRight size={12} />
@@ -240,7 +261,7 @@ export default function HomeClient({
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8 md:gap-x-6 md:gap-y-12">
           {trendingPosts.slice(0, 8).map((post) => (
             <article key={post.id} className="group flex flex-col h-full">
-              <Link href={`/${post.slug}`} className="block overflow-hidden bg-gray-100 dark:bg-gray-800 mb-3 relative aspect-[4/3] rounded-sm">
+              <Link href={`/post/${post.slug}`} className="block overflow-hidden bg-gray-100 dark:bg-gray-800 mb-3 relative aspect-[4/3] rounded-sm">
                 {post.feature_image && (
                   <Image
                     src={post.feature_image}
@@ -258,7 +279,7 @@ export default function HomeClient({
               <div className="flex flex-col flex-1">
                 <span className="text-[9px] tracking-widest uppercase text-primary font-bold mb-1.5">{post.primary_tag?.name || 'Featured'}</span>
                 <h3 className="font-serif text-sm md:text-lg text-text-light dark:text-text-dark mb-2 leading-snug group-hover:text-primary transition-colors font-bold tracking-tight">
-                  <Link href={`/${post.slug}`}>{post.title}</Link>
+                  <Link href={`/post/${post.slug}`}>{post.title}</Link>
                 </h3>
               </div>
             </article>
@@ -266,12 +287,37 @@ export default function HomeClient({
         </div>
 
         <Link
-          href="/tag/all"
+          href="/category/all"
           className="md:hidden mt-10 w-full flex items-center justify-center gap-2 text-[10px] font-bold tracking-widest uppercase text-text-light dark:text-text-dark border border-border-light dark:border-border-dark py-3 rounded-sm active:bg-gray-100 dark:active:bg-gray-800"
         >
           View All Stories <ArrowRight size={12} />
         </Link>
-      </div>
+      </section>
+
+      {/* --- NEWSLETTER SECTION --- */}
+      <section id="newsletter" className="bg-stone-50 dark:bg-gray-900 py-20 transition-colors duration-300">
+        <div className="container mx-auto px-6 max-w-4xl text-center">
+          <div className="flex justify-center mb-6">
+            <Mail className="text-primary" size={32} strokeWidth={1} />
+          </div>
+          <h2 className="font-serif text-3xl md:text-5xl text-gray-900 dark:text-white mb-6">Join The Inner Circle</h2>
+          <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base mb-10 max-w-xl mx-auto leading-relaxed">
+            Get our weekly editorial digest, luxury beauty finds, and members-only skincare secrets delivered directly to your inbox.
+          </p>
+          <form className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" onSubmit={(e) => e.preventDefault()}>
+            <input 
+              type="email" 
+              placeholder="YOUR EMAIL ADDRESS" 
+              className="flex-1 bg-white dark:bg-gray-800 border border-border-light dark:border-border-dark px-6 py-4 text-[10px] font-bold tracking-widest uppercase focus:outline-none focus:border-primary transition-colors"
+              required
+            />
+            <button className="bg-primary text-white px-8 py-4 text-[10px] font-bold tracking-widest uppercase hover:bg-primary-dark transition-all transform active:scale-95">
+              Subscribe Now
+            </button>
+          </form>
+          <p className="text-[10px] text-gray-400 mt-6 uppercase tracking-widest">No spam. Only beauty. Unsubscribe anytime.</p>
+        </div>
+      </section>
     </main>
   );
 }

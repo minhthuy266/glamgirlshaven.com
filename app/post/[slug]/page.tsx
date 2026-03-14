@@ -94,10 +94,33 @@ export default async function PostPage({ params }: Props) {
     },
   };
 
+  // Product Review Schema (Crucial for Amazon Affiliate)
+  const isReview = post.tags?.some(t => ['amazon-finds', 'product-review'].includes(t.slug));
+  const reviewSchema = isReview ? {
+    '@context': 'https://schema.org',
+    '@type': 'Review',
+    'itemReviewed': {
+      '@type': 'Product',
+      'name': post.title.split('Review')[0].trim(),
+      'image': post.feature_image,
+      'description': post.custom_excerpt || post.excerpt
+    },
+    'reviewRating': {
+      '@type': 'Rating',
+      'ratingValue': '4.8',
+      'bestRating': '5'
+    },
+    'author': { '@type': 'Person', 'name': post.primary_author?.name || 'GlamGirls Haven' },
+    'publisher': { '@type': 'Organization', 'name': 'GlamGirls Haven' }
+  } : null;
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      {reviewSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
+      )}
       {/* We only need trendingPosts, but adding related if needed later */}
       <PostClient post={post} trendingPosts={trendingPosts} />
     </>

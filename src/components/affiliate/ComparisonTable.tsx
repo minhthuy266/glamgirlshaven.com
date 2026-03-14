@@ -19,16 +19,16 @@ interface ComparisonTableProps {
 export function ComparisonTable({ title = "Top Picks Comparison", products }: ComparisonTableProps) {
   return (
     <div className="my-10">
-      <h3 className="text-2xl font-serif font-bold text-gray-900 dark:text-white mb-6">{title}</h3>
-      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-900">
+      <h3 className="text-2xl font-serif font-bold text-text-light dark:text-text-dark mb-6 tracking-tight">{title}</h3>
+      <div className="overflow-x-auto rounded-sm border border-border-light dark:border-border-dark shadow-md bg-white dark:bg-gray-900 scrollbar-thin">
         <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
-            <tr className="bg-gray-50 dark:bg-gray-800/80 border-b border-gray-200 dark:border-gray-700">
-              <th className="p-4 font-serif font-bold text-gray-900 dark:text-white w-1/3">Product</th>
-              <th className="p-4 font-serif font-bold text-gray-900 dark:text-white">Best For</th>
-              <th className="p-4 font-serif font-bold text-gray-900 dark:text-white">Rating</th>
-              <th className="p-4 font-serif font-bold text-gray-900 dark:text-white">Price</th>
-              <th className="p-4 font-serif font-bold text-gray-900 dark:text-white text-center">Action</th>
+            <tr className="bg-stone-50 dark:bg-bg-dark border-b border-border-light dark:border-border-dark">
+              <th className="p-5 text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 w-1/3">The Selection</th>
+              <th className="p-5 text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400">Best For</th>
+              <th className="p-5 text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400">Expert Rank</th>
+              <th className="p-5 text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400">Value</th>
+              <th className="p-5 text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 text-center">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -50,8 +50,8 @@ export function ComparisonTable({ title = "Top Picks Comparison", products }: Co
                       )}
                     </div>
                     <div>
-                      <span className="font-bold text-gray-900 dark:text-white text-base block mb-1">{product.name}</span>
-                      {product.award && <span className="text-xs font-bold text-primary uppercase tracking-wider">{product.award}</span>}
+                      <span className="font-serif font-bold text-text-light dark:text-text-dark text-lg block mb-1">{product.name}</span>
+                      {product.award && <span className="text-[9px] font-bold text-primary uppercase tracking-[0.2em]">{product.award}</span>}
                     </div>
                   </div>
                 </td>
@@ -62,15 +62,14 @@ export function ComparisonTable({ title = "Top Picks Comparison", products }: Co
                     <span className="text-sm font-bold text-gray-700 dark:text-gray-300 ml-1">{product.rating}</span>
                   </div>
                 </td>
-                <td className="p-4 font-bold text-gray-900 dark:text-white text-lg">{product.price}</td>
+                <td className="p-4 font-serif font-bold text-text-light dark:text-text-dark text-lg">{product.price}</td>
                 <td className="p-4 text-center">
                   <a 
                     href={product.link} 
                     target="_blank" 
                     rel="noopener noreferrer nofollow" 
-                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#FF9900] hover:bg-[#E48A00] text-white text-sm font-bold rounded-lg transition-colors whitespace-nowrap shadow-sm"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-text-light dark:bg-white text-white dark:text-text-light text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-primary dark:hover:bg-primary dark:hover:text-white transition-all whitespace-nowrap shadow-sm rounded-sm"
                   >
-                    <ShoppingCart className="w-4 h-4" />
                     Check Price
                   </a>
                 </td>

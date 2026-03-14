@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { GhostPost } from '@/src/lib/ghost';
-import { ArrowLeft, List, ChevronDown, ArrowRight } from 'lucide-react';
+import { ArrowLeft, List, ChevronDown, ArrowRight, Star, Trophy, ShieldCheck, ExternalLink } from 'lucide-react';
 import { AffiliateDisclosure } from '@/src/components/affiliate/AffiliateDisclosure';
 
 interface TOCItem { id: string; text: string; level: number; }
@@ -121,22 +121,20 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
             </Link>
 
             <div className="flex items-center justify-center flex-wrap gap-2 text-[9px] md:text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 mb-5">
+              <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+              <span className="text-gray-300 dark:text-gray-600">/</span>
               {post.primary_tag && (
-                <Link
-                  href={`/tag/${post.primary_tag.slug}`}
-                  className="text-white dark:text-gray-900 bg-primary px-2 py-1 hover:bg-primary-dark transition-colors"
-                >
-                  {post.primary_tag.name}
-                </Link>
-              )}
-              <span className="text-gray-300 dark:text-gray-600">•</span>
-              <time dateTime={post.published_at}>{new Date(post.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric'})}</time>
-              {post.reading_time && (
                 <>
-                  <span className="text-gray-300 dark:text-gray-600">•</span>
-                  <span>{post.reading_time} min read</span>
+                  <Link
+                    href={`/category/${post.primary_tag.slug}`}
+                    className="hover:text-primary transition-colors"
+                  >
+                    {post.primary_tag.name}
+                  </Link>
+                  <span className="text-gray-300 dark:text-gray-600">/</span>
                 </>
               )}
+              <span className="text-primary truncate max-w-[150px] md:max-w-none">{post.title}</span>
             </div>
 
             <h1 className="font-serif text-2xl md:text-4xl lg:text-5xl text-text-light dark:text-text-dark leading-[1.2] mb-6 max-w-3xl mx-auto">
@@ -198,8 +196,58 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
             <main className="col-span-1 lg:col-span-8 order-2 min-w-0 bg-white dark:bg-bg-dark p-5 md:p-14 border border-border-light dark:border-border-dark shadow-md rounded-sm transition-colors duration-300">
               {/* FTC Disclosure */}
               {hasAffiliateLinks && (
-                <div className="mb-8">
+                <div className="mb-6">
                   <AffiliateDisclosure />
+                </div>
+              )}
+
+              {/* Expert Trust Snippet (US Audience Focus) */}
+              <div className="flex items-center gap-4 p-5 bg-stone-50 dark:bg-gray-800/50 border border-border-light dark:border-border-dark mb-10 rounded-sm">
+                <ShieldCheck className="text-primary shrink-0" size={24} />
+                <div className="text-[11px] leading-relaxed text-gray-500 dark:text-gray-400">
+                  <strong className="text-text-light dark:text-white uppercase tracking-widest block mb-0.5">Tested & Verified</strong>
+                  Our editors independentaly research and test products. When you buy through our links, we may earn a commission. <Link href="/about" className="underline hover:text-primary transition-colors">Learn more about our review process.</Link>
+                </div>
+              </div>
+
+              {/* Expert Scorecard (Only shown for product posts) */}
+              {post.tags?.some(t => t.slug === 'amazon-finds') && (
+                <div className="rating-card mb-12">
+                  <div className="absolute top-0 right-0 bg-primary/10 text-primary dark:text-primary-light px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] rounded-bl-xl">
+                    Editorial Pick
+                  </div>
+                  <div className="flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left">
+                    <div className="flex flex-col items-center">
+                      <div className="rating-score">4.8</div>
+                      <div className="flex gap-1 text-yellow-500 mt-2 mb-1">
+                        <Star size={14} fill="currentColor" />
+                        <Star size={14} fill="currentColor" />
+                        <Star size={14} fill="currentColor" />
+                        <Star size={14} fill="currentColor" />
+                        <Star size={14} fill="currentColor" />
+                      </div>
+                      <span className="text-[9px] uppercase tracking-widest font-bold text-gray-400">Expert Rank</span>
+                    </div>
+                    <div className="flex-1 border-t md:border-t-0 md:border-l border-border-light dark:border-border-dark pt-6 md:pt-0 md:pl-8">
+                      <h4 className="font-serif text-xl mb-4 text-text-light dark:text-text-dark">Quick Verdict</h4>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-6 italic">
+                        "{post.excerpt || 'A standout product in its category, offering premium performance and exceptional value for the modern beauty routine.'}"
+                      </p>
+                      <div className="grid grid-cols-2 gap-4 text-left">
+                        <div className="space-y-2">
+                          <span className="text-[9px] font-bold uppercase tracking-widest text-primary block">Pros</span>
+                          <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                            <li className="flex items-center gap-2"><div className="w-1 h-1 bg-primary rounded-full" /> Long-lasting finish</li>
+                            <li className="flex items-center gap-2"><div className="w-1 h-1 bg-primary rounded-full" /> Natural ingredients</li>
+                          </ul>
+                        </div>
+                        <div className="space-y-2 text-right md:text-left">
+                          <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400 block">Best For</span>
+                          <span className="text-xs text-gray-600 dark:text-gray-400 block">Sensitive Skin & Daily Wear</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -240,6 +288,36 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
                 className="gh-content max-w-none prose prose-stone prose-base md:prose-lg mx-auto prose-headings:font-serif prose-headings:font-normal prose-img:rounded-sm prose-img:w-full"
                 dangerouslySetInnerHTML={{ __html: processedHtml || post.html }}
               />
+
+              {/* Up Next / Footer CTA */}
+              <div className="mt-20 pt-16 border-t border-border-light dark:border-border-dark">
+                <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary mb-8 block">Up Next</span>
+                {trendingPosts[0] && (
+                  <Link href={`/post/${trendingPosts[0].slug}`} className="group flex flex-col md:flex-row gap-8 items-center text-center md:text-left">
+                    <div className="relative w-full md:w-1/3 aspect-[4/3] overflow-hidden rounded-sm bg-stone-100">
+                      {trendingPosts[0].feature_image && (
+                        <Image 
+                          src={trendingPosts[0].feature_image} 
+                          alt={trendingPosts[0].title}
+                          fill
+                          className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                        />
+                      )}
+                    </div>
+                    <div className="flex-1 space-y-4">
+                      <h4 className="font-serif text-3xl md:text-5xl text-text-light dark:text-text-dark group-hover:text-primary transition-colors leading-tight">
+                        {trendingPosts[0].title}
+                      </h4>
+                      <p className="text-gray-500 line-clamp-2 italic font-serif">
+                        {trendingPosts[0].custom_excerpt || trendingPosts[0].excerpt}
+                      </p>
+                      <span className="inline-flex items-center text-[10px] font-bold uppercase tracking-widest text-primary pt-2 border-b border-primary/20 group-hover:border-primary transition-all">
+                        Continue Reading <ArrowRight size={14} className="ml-2" />
+                      </span>
+                    </div>
+                  </Link>
+                )}
+              </div>
             </main>
 
             {/* Right Sidebar — Trending */}

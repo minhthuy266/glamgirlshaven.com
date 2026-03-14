@@ -1,12 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Tenor+Sans&display=swap');
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Tenor Sans", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   
   /* Feminine Beauty Palette */
   --color-primary: #B5838D; /* Dusty Rose */
@@ -311,6 +311,42 @@
     color: var(--color-text-dark);
   }
 
+
+  /* Professional Trust Bar */
+  .trust-item {
+    @apply flex items-center gap-3 text-gray-500 dark:text-gray-400;
+  }
+  .trust-item span {
+    @apply text-[9px] uppercase tracking-[0.2em] font-bold;
+  }
+
+  /* Expert Rating Card */
+  .rating-card {
+    @apply bg-white dark:bg-gray-900 border border-border-light dark:border-border-dark p-6 md:p-8 my-12 relative overflow-hidden;
+  }
+  .rating-score {
+    @apply text-5xl md:text-6xl font-serif font-bold text-primary dark:text-primary-light;
+  }
+
+  /* Instagram Feed Grid */
+  .insta-grid {
+    @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2;
+  }
+  .insta-item {
+    @apply relative aspect-square overflow-hidden cursor-pointer;
+  }
+  .insta-item img {
+    @apply object-cover w-full h-full transition-transform duration-700;
+  }
+  .insta-item:hover img {
+    @apply scale-110;
+  }
+  .insta-overlay {
+    @apply absolute inset-0 bg-primary/20 opacity-0 transition-opacity duration-300 flex items-center justify-center;
+  }
+  .insta-item:hover .insta-overlay {
+    @apply opacity-100;
+  }
 
   /* Custom Scrollbar for TOC */
   .scrollbar-thin::-webkit-scrollbar {

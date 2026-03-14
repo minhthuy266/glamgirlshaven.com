@@ -26,8 +26,10 @@ export default async function Category({ params }: CategoryProps) {
     <div className="bg-bg-light dark:bg-bg-dark min-h-screen">
       <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl py-20">
         <header className="text-center mb-20 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-          <div className="mb-6">
-            <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-primary">Collections</span>
+          <div className="mb-6 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.3em] font-bold">
+            <Link href="/" className="text-gray-400 hover:text-primary transition-colors">Home</Link>
+            <span className="text-primary/30">/</span>
+            <span className="text-primary">Collections</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-serif font-bold text-gray-900 dark:text-white mb-6 leading-tight tracking-tighter">
             {categoryName}
@@ -39,7 +41,7 @@ export default async function Category({ params }: CategoryProps) {
         </header>
 
         {posts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-14">
             {posts.map((post) => (
               <article 
                 key={post.id}
