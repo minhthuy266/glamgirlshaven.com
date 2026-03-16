@@ -31,10 +31,13 @@ export default async function HomePage() {
     getPostsByTag('trending'),
   ]);
 
-  const hotPost =
-    posts.find((p) => p.tags?.some((t) => t.slug === 'beauty-finds' || t.slug === 'skincare')) ||
-    posts[0] || 
-    null;
+  // Select Hero Post: ONLY change if explicitly tagged as 'hero' or 'featured'
+  const heroPost = posts.find((p) => p.tags?.some((t) => t.slug === 'hero' || t.slug === 'featured'));
+  
+  // Always use the pink nail polish image as default unless a heroPost with a valid image exists
+  const heroBgImage = heroPost?.feature_image || FALLBACK_HERO;
+  
+  const hotPost = heroPost || posts[0] || null;
 
   // Use real Masterclass-tagged posts; fall back to specific categories if none tagged
   const finalMasterclassPosts = masterclassPosts.length > 0 
@@ -45,11 +48,6 @@ export default async function HomePage() {
   const finalTrendingPosts = trendingTaggedPosts.length > 0
     ? trendingTaggedPosts
     : posts.filter((p) => hotPost ? p.id !== hotPost.id : true);
-
-  // Use hotPost's feature_image for hero, fall back to Unsplash default
-  const heroBgImage = hotPost?.feature_image?.startsWith('http')
-    ? hotPost.feature_image
-    : FALLBACK_HERO;
 
   // Use real Verdict-tagged Ghost posts; fall back to first 3 site posts if none tagged
   const verdictProducts: GhostPost[] = verdictPosts.length > 0 ? verdictPosts.slice(0, 4) : posts.slice(0, 4);
