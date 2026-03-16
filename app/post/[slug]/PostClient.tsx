@@ -3,8 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GhostPost } from '@/src/lib/ghost';
-import { ArrowLeft, List, ChevronDown, ArrowRight, Star, Trophy, ShieldCheck, ExternalLink } from 'lucide-react';
+import type { GhostPost } from '@/src/lib/types';
+import { ArrowLeft, List, ChevronDown, ArrowRight, Star, Trophy, ShieldCheck, ExternalLink, Zap, Award, CheckCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { AffiliateDisclosure } from '@/src/components/affiliate/AffiliateDisclosure';
 
 interface TOCItem { id: string; text: string; level: number; }
@@ -67,7 +68,21 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
       }
     }
 
-    setProcessedHtml(doc.body.innerHTML);
+    // Normalize all image URLs within the post content
+    const images = doc.querySelectorAll('img');
+    images.forEach(img => {
+      const src = img.getAttribute('src');
+      if (src && !src.startsWith('http') && src.startsWith('/')) {
+        // If it's a Ghost image, it should point to glamoroushaven.com (or wherever the site is)
+        if (src.startsWith('/content/images')) {
+          img.setAttribute('src', `https://glamgirlshaven.com${src}`);
+        } else {
+          img.setAttribute('src', `${process.env.NEXT_PUBLIC_SITE_URL || 'https://glamgirlshaven.com'}${src}`);
+        }
+      }
+    });
+
+    setProcessedHtml(doc.body.innerHTML || '');
     setToc(tocData);
   }, [post]);
 
@@ -205,50 +220,62 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
               <div className="flex items-center gap-4 p-5 bg-stone-50 dark:bg-gray-800/50 border border-border-light dark:border-border-dark mb-10 rounded-sm">
                 <ShieldCheck className="text-primary shrink-0" size={24} />
                 <div className="text-[11px] leading-relaxed text-gray-500 dark:text-gray-400">
-                  <strong className="text-text-light dark:text-white uppercase tracking-widest block mb-0.5">Tested & Verified</strong>
+                  <strong className="text-text-light dark:text-white uppercase tracking-[0.3em] block mb-1">Tested & Verified</strong>
                   Our editors independentaly research and test products. When you buy through our links, we may earn a commission. <Link href="/about" className="underline hover:text-primary transition-colors">Learn more about our review process.</Link>
                 </div>
               </div>
 
               {/* Expert Scorecard (Only shown for product posts) */}
-              {post.tags?.some(t => t.slug === 'amazon-finds') && (
-                <div className="rating-card mb-12">
-                  <div className="absolute top-0 right-0 bg-primary/10 text-primary dark:text-primary-light px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] rounded-bl-xl">
-                    Editorial Pick
+              {post.tags?.some(t => t.slug === 'amazon-finds' || t.slug === 'editor-choice') && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  className="bg-stone-50 dark:bg-gray-800/80 border-2 border-primary/20 p-8 md:p-12 mb-16 relative overflow-hidden group"
+                >
+                  <div className="absolute top-0 right-0 bg-primary text-white px-6 py-2 text-[10px] font-bold uppercase tracking-[0.3em] font-sans">
+                    Editor's Verdict
                   </div>
-                  <div className="flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left">
+                  
+                  <div className="flex flex-col md:flex-row gap-12 items-center md:items-start">
                     <div className="flex flex-col items-center">
-                      <div className="rating-score">4.8</div>
-                      <div className="flex gap-1 text-yellow-500 mt-2 mb-1">
-                        <Star size={14} fill="currentColor" />
-                        <Star size={14} fill="currentColor" />
-                        <Star size={14} fill="currentColor" />
-                        <Star size={14} fill="currentColor" />
-                        <Star size={14} fill="currentColor" />
+                      <div className="w-32 h-32 rounded-full border-4 border-primary/10 flex items-center justify-center relative">
+                        <span className="text-4xl md:text-5xl font-serif font-bold text-primary">9.8</span>
+                        <div className="absolute -bottom-2 bg-primary text-white text-[8px] font-bold px-3 py-1 uppercase tracking-widest">Score</div>
                       </div>
-                      <span className="text-[9px] uppercase tracking-widest font-bold text-gray-400">Expert Rank</span>
+                      <div className="flex gap-1 text-primary mt-6">
+                        {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={14} fill="currentColor" />)}
+                      </div>
                     </div>
-                    <div className="flex-1 border-t md:border-t-0 md:border-l border-border-light dark:border-border-dark pt-6 md:pt-0 md:pl-8">
-                      <h4 className="font-serif text-xl mb-4 text-text-light dark:text-text-dark">Quick Verdict</h4>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-6 italic">
-                        "{post.excerpt || 'A standout product in its category, offering premium performance and exceptional value for the modern beauty routine.'}"
+                    
+                    <div className="flex-1 space-y-6">
+                      <h4 className="font-serif text-2xl md:text-3xl text-text-light dark:text-white font-bold leading-tight">
+                        Why We Love It
+                      </h4>
+                      <p className="text-gray-600 dark:text-gray-300 italic font-serif text-lg leading-relaxed border-l-2 border-primary/20 pl-6">
+                        "{post.excerpt || 'This formulation sets a new benchmark for professional-grade results at home. It is intentional, effective, and perfectly aligned with a luxury aesthetic.'}"
                       </p>
-                      <div className="grid grid-cols-2 gap-4 text-left">
-                        <div className="space-y-2">
-                          <span className="text-[9px] font-bold uppercase tracking-widest text-primary block">Pros</span>
-                          <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
-                            <li className="flex items-center gap-2"><div className="w-1 h-1 bg-primary rounded-full" /> Long-lasting finish</li>
-                            <li className="flex items-center gap-2"><div className="w-1 h-1 bg-primary rounded-full" /> Natural ingredients</li>
+                      
+                      <div className="grid grid-cols-2 gap-8 pt-4">
+                        <div className="space-y-3">
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-primary flex items-center gap-2">
+                            <Award size={14} /> The Pros
+                          </span>
+                          <ul className="text-sm text-gray-500 space-y-2">
+                            <li className="flex items-center gap-2"><CheckCircle size={12} className="text-green-500" /> Instant visible glow</li>
+                            <li className="flex items-center gap-2"><CheckCircle size={12} className="text-green-500" /> Professional grade</li>
                           </ul>
                         </div>
-                        <div className="space-y-2 text-right md:text-left">
-                          <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400 block">Best For</span>
-                          <span className="text-xs text-gray-600 dark:text-gray-400 block">Sensitive Skin & Daily Wear</span>
+                        <div className="space-y-3">
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 flex items-center gap-2">
+                            <Zap size={14} /> Best For
+                          </span>
+                          <p className="text-sm text-gray-500 font-medium">Daily Luxury Rituals & Sensitive Skin</p>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               )}
 
               {/* Mobile TOC */}
@@ -283,10 +310,10 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
                 </div>
               )}
 
-              {/* Article Body */}
+              {/* Article Body — rendered only after client-side DOMParser run (sanitises the HTML) */}
               <div
                 className="gh-content max-w-none prose prose-stone prose-base md:prose-lg mx-auto prose-headings:font-serif prose-headings:font-normal prose-img:rounded-sm prose-img:w-full"
-                dangerouslySetInnerHTML={{ __html: processedHtml || post.html }}
+                dangerouslySetInnerHTML={{ __html: processedHtml }}
               />
 
               {/* Up Next / Footer CTA */}

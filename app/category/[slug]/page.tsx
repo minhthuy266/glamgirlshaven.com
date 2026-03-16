@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import { getPosts, getPostsByTag } from '@/src/lib/ghost';
+import CategoryClient from './CategoryClient';
 
 interface CategoryProps {
   params: Promise<{
@@ -24,8 +25,13 @@ export default async function Category({ params }: CategoryProps) {
 
   return (
     <div className="bg-bg-light dark:bg-bg-dark min-h-screen">
-      <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl py-20">
-        <header className="text-center mb-20 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl py-20 relative overflow-hidden">
+        {/* Chữ nền — clip trong vùng container max-w-7xl */}
+        <div className="absolute top-16 right-0 text-[10rem] md:text-[18rem] leading-none font-serif font-bold text-primary/5 select-none pointer-events-none hidden lg:block">
+          {categoryName}
+        </div>
+
+        <header className="text-center mb-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <div className="mb-6 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.3em] font-bold">
             <Link href="/" className="text-gray-400 hover:text-primary transition-colors">Home</Link>
             <span className="text-primary/30">/</span>
@@ -41,52 +47,7 @@ export default async function Category({ params }: CategoryProps) {
         </header>
 
         {posts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-14">
-            {posts.map((post) => (
-              <article 
-                key={post.id}
-                className="group flex flex-col"
-              >
-                <Link href={`/post/${post.slug}`} className="relative overflow-hidden mb-6 aspect-[4/5] bg-gray-100 dark:bg-gray-800">
-                  {post.feature_image ? (
-                    <img 
-                      src={post.feature_image} 
-                      alt={post.title}
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                      <span className="text-gray-400">No Image</span>
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-500"></div>
-                </Link>
-                <div className="flex flex-col flex-grow">
-                  <div className="flex items-center gap-4 mb-4">
-                    <span className="text-[9px] uppercase tracking-widest font-bold text-primary">
-                      {post.primary_tag?.name || 'Beauty'}
-                    </span>
-                    <span className="w-8 h-[1px] bg-border-light dark:bg-border-dark"></span>
-                    <span className="text-[9px] uppercase tracking-widest font-bold text-gray-400">
-                      {new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                    </span>
-                  </div>
-                  <h3 className="text-2xl font-serif font-bold text-gray-900 dark:text-white mb-4 leading-tight group-hover:text-primary transition-colors line-clamp-2">
-                    <Link href={`/post/${post.slug}`}>
-                      {post.title}
-                    </Link>
-                  </h3>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm mb-6 line-clamp-2 leading-relaxed italic font-serif">
-                    {post.custom_excerpt || post.excerpt}
-                  </p>
-                  <Link href={`/post/${post.slug}`} className="mt-auto text-[10px] uppercase tracking-[0.2em] font-bold text-gray-900 dark:text-white border-b border-gray-900 dark:border-white w-max pb-1 hover:text-primary hover:border-primary transition-all">
-                    Read Story
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
+          <CategoryClient initialPosts={posts} categoryName={categoryName} />
         ) : (
           <div className="text-center py-32 border border-dashed border-border-light dark:border-border-dark">
             <h2 className="text-3xl font-serif font-bold text-gray-900 dark:text-white mb-6 italic">No articles found</h2>
@@ -94,14 +55,6 @@ export default async function Category({ params }: CategoryProps) {
             <Link href="/" className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-900 dark:text-white border border-gray-900 dark:border-white px-10 py-4 hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-gray-900 transition-all">
               Back to Home
             </Link>
-          </div>
-        )}
-
-        {posts.length > 0 && (
-          <div className="mt-24 text-center">
-            <button className="px-12 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-primary dark:hover:bg-primary transition-colors">
-              Load More Stories
-            </button>
           </div>
         )}
       </div>

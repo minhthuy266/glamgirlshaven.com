@@ -1,105 +1,29 @@
-export const GHOST_API_URL = process.env.NEXT_PUBLIC_GHOST_API_URL || 'https://glamgirlshaven.com';
-export const GHOST_CONTENT_API_KEY = process.env.NEXT_PUBLIC_GHOST_CONTENT_API_KEY || '1337fc59d0b12e61b33bacafc2';
+// This module is SERVER-SIDE ONLY.
+// Adding 'server-only' ensures Next.js throws a build error if a client
+// component tries to import anything from this file.
+import 'server-only';
 
-export interface GhostPost {
-  id: string;
-  title: string;
-  slug: string;
-  html: string;
-  url: string;
-  excerpt?: string;
-  custom_excerpt?: string;
-  feature_image?: string;
-  published_at: string;
-  reading_time: number;
-  primary_author?: {
-    name: string;
-    profile_image?: string;
-  };
-  primary_tag?: {
-    name: string;
-    slug: string;
-  };
-  tags?: {
-    name: string;
-    slug: string;
-  }[];
+import type { GhostPost } from './types';
+export type { GhostPost };
+
+export const GHOST_API_URL = process.env.GHOST_API_URL || 'https://glamgirlshaven.com';
+export const GHOST_CONTENT_API_KEY = process.env.GHOST_CONTENT_API_KEY || '';
+
+if (!GHOST_CONTENT_API_KEY) {
+  // Use warn instead of error to avoid triggering fatal dev overlays in Next.js 15
+  console.warn(
+    '[ghost.ts] CRITICAL: GHOST_CONTENT_API_KEY env var is not set. ' +
+    'All Ghost API requests will return empty results. Set this variable to enable real content.'
+  );
+}
+if (process.env.NODE_ENV === 'production' && !process.env.GHOST_API_URL) {
+  console.warn('[ghost.ts] WARNING: GHOST_API_URL env var is not set. Falling back to hardcoded production URL.');
 }
 
-const MOCK_POSTS: GhostPost[] = [
-  {
-    id: '1',
-    title: '5 Viral Drugstore Dupes for High-End Skincare You Need to Try',
-    slug: 'viral-drugstore-dupes',
-    html: '<p>Save your money without compromising on quality. These drugstore alternatives perform just as well as their luxury counterparts. We tested 20 different products to find these top 5 winners.</p>',
-    url: '#',
-    excerpt: 'Save your money without compromising on quality. These drugstore alternatives perform just as well as their luxury counterparts.',
-    feature_image: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=1000&auto=format&fit=crop',
-    published_at: new Date().toISOString(),
-    reading_time: 5,
-    primary_author: { name: 'Sarah' },
-    primary_tag: { name: 'Skincare', slug: 'skincare' },
-    tags: [{ name: 'Skincare', slug: 'skincare' }, { name: 'Amazon Finds', slug: 'amazon-finds' }]
-  },
-  {
-    id: '2',
-    title: 'The Ultimate Guide to "Clean Girl" Makeup for Beginners',
-    slug: 'clean-girl-makeup-guide',
-    html: '<p>The "clean girl" aesthetic is all about minimalism and enhancing your natural beauty...</p>',
-    url: '#',
-    excerpt: 'The "clean girl" aesthetic is all about minimalism and enhancing your natural beauty. Learn how to achieve this effortless look.',
-    feature_image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?q=80&w=1000&auto=format&fit=crop',
-    published_at: new Date().toISOString(),
-    reading_time: 7,
-    primary_author: { name: 'Sarah' },
-    primary_tag: { name: 'Makeup', slug: 'makeup' },
-    tags: [{ name: 'Makeup', slug: 'makeup' }]
-  },
-  {
-    id: '3',
-    title: 'How to Restore Damaged Hair: A 3-Step Routine',
-    slug: 'restore-damaged-hair',
-    html: '<p>Heat styling and chemical treatments can take a toll on your locks. Discover our proven 3-step routine to bring back your hair\'s health.</p>',
-    url: '#',
-    excerpt: 'Heat styling and chemical treatments can take a toll on your locks.',
-    feature_image: 'https://images.unsplash.com/photo-1527799822343-202673ea41e5?q=80&w=1000&auto=format&fit=crop',
-    published_at: new Date().toISOString(),
-    reading_time: 4,
-    primary_author: { name: 'Sarah' },
-    primary_tag: { name: 'Haircare', slug: 'haircare' },
-    tags: [{ name: 'Haircare', slug: 'haircare' }]
-  },
-  {
-    id: '4',
-    title: 'Morning Rituals for Intentional Wellness',
-    slug: 'morning-wellness-rituals',
-    html: '<p>Start your day with purpose. From meditation to the perfect cup of tea, these rituals will transform your morning...</p>',
-    url: '#',
-    excerpt: 'Start your day with purpose. These ritual will transform your morning.',
-    feature_image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1000&auto=format&fit=crop',
-    published_at: new Date().toISOString(),
-    reading_time: 6,
-    primary_author: { name: 'Sarah' },
-    primary_tag: { name: 'Wellness', slug: 'wellness-self-love' },
-    tags: [{ name: 'Wellness', slug: 'wellness-self-love' }]
-  },
-  {
-    id: '5',
-    title: 'The Best Fall Fragrances to Wear This Season',
-    slug: 'best-fall-fragrances',
-    html: '<p>Warm, spicy, and woody. Find your new signature scent with our editor\'s top picks for autumn.</p>',
-    url: '#',
-    excerpt: 'Find your new signature scent with our editor\'s top picks for autumn.',
-    feature_image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=1000&auto=format&fit=crop',
-    published_at: new Date().toISOString(),
-    reading_time: 5,
-    primary_author: { name: 'Sarah' },
-    primary_tag: { name: 'Fragrance', slug: 'fragrance-body' },
-    tags: [{ name: 'Fragrance', slug: 'fragrance-body' }]
-  }
-];
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glamgirlshaven.com';
 
-async function fetchWithTimeout(url: string, options: any = {}, timeout = 5000) {
+
+async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout = 8000) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
   try {
@@ -115,72 +39,109 @@ async function fetchWithTimeout(url: string, options: any = {}, timeout = 5000) 
   }
 }
 
+const DEFAULT_COVER = 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?q=80&w=1200&auto=format&fit=crop';
+
+const normalizeUrl = (url?: string) => {
+  if (!url) return null;
+  if (url.startsWith('http')) return url;
+  
+  // Ghost relative paths
+  if (url.startsWith('/content/images') || url.startsWith('content/images')) {
+    const cleanPath = url.startsWith('/') ? url : `/${url}`;
+    return `${GHOST_API_URL}${cleanPath}`;
+  }
+  
+  // Any other relative path starting with /
+  if (url.startsWith('/')) {
+    return `${GHOST_API_URL}${url}`;
+  }
+  
+  return url;
+};
+
+const mapPost = (p: any): GhostPost => ({
+  ...p,
+  feature_image: normalizeUrl(p.feature_image) || DEFAULT_COVER,
+  primary_author: p.primary_author ? {
+    ...p.primary_author,
+    profile_image: normalizeUrl(p.primary_author.profile_image)
+  } : undefined
+});
+
+// Base query params shared by all list requests
+const BASE_PARAMS = `key=${GHOST_CONTENT_API_KEY}&include=tags,authors&filter=status:published&limit=50`;
+
 export async function getPosts(): Promise<GhostPost[]> {
-  const url = `${GHOST_API_URL}/ghost/api/content/posts/?key=${GHOST_CONTENT_API_KEY}&include=tags,authors`;
-  console.log('Fetching Ghost posts from:', url);
+  if (!GHOST_CONTENT_API_KEY) return [];
+
+  const url = `${GHOST_API_URL}/ghost/api/content/posts/?${BASE_PARAMS}`;
   try {
-    const res = await fetchWithTimeout(url, { next: { revalidate: 60 } });
-    
+    const res = await fetchWithTimeout(url, { next: { revalidate: 300 } });
+
     if (!res.ok) {
-      console.error('Failed to fetch Ghost posts:', res.status, await res.text());
-      return MOCK_POSTS;
+      if (res.status !== 401 && res.status !== 403) {
+        console.error('Failed to fetch Ghost posts:', res.status);
+      }
+      return [];
     }
-    
+
     const data = await res.json();
-    console.log(`Fetched ${data.posts?.length || 0} posts`);
-    return data.posts && data.posts.length > 0 ? data.posts : MOCK_POSTS;
+    const posts = Array.isArray(data.posts) ? data.posts : [];
+
+    if (data.meta?.pagination?.pages > 1) {
+      console.warn(`[ghost.ts] getPosts: ${data.meta.pagination.total} posts exist but only fetched first 50. Consider paginating.`);
+    }
+
+    return posts.map(mapPost);
   } catch (error) {
     console.error('Error fetching Ghost posts:', error);
-    return MOCK_POSTS;
+    return [];
   }
 }
 
 export async function getPostsByTag(tagSlug: string): Promise<GhostPost[]> {
-  const url = `${GHOST_API_URL}/ghost/api/content/posts/?key=${GHOST_CONTENT_API_KEY}&filter=tag:${tagSlug}&include=tags,authors`;
-  console.log(`Fetching Ghost posts for tag ${tagSlug} from:`, url);
+  if (!GHOST_CONTENT_API_KEY) return [];
+
+  const url = `${GHOST_API_URL}/ghost/api/content/posts/?${BASE_PARAMS}&filter=status:published%2Btag:${tagSlug}`;
   try {
-    const res = await fetchWithTimeout(url, { next: { revalidate: 60 } });
-    
+    const res = await fetchWithTimeout(url, { next: { revalidate: 300 } });
+
     if (!res.ok) {
-      console.error(`Failed to fetch Ghost posts for tag ${tagSlug}:`, res.status, await res.text());
-      return MOCK_POSTS.filter(p => p.primary_tag?.slug === tagSlug);
+      if (res.status !== 401 && res.status !== 403) {
+        console.error(`Failed to fetch Ghost posts for tag ${tagSlug}:`, res.status);
+      }
+      return [];
     }
-    
+
     const data = await res.json();
-    console.log(`Fetched ${data.posts?.length || 0} posts for tag ${tagSlug}`);
-    return data.posts && data.posts.length > 0 ? data.posts : MOCK_POSTS.filter(p => p.primary_tag?.slug === tagSlug);
+    const posts = Array.isArray(data.posts) ? data.posts : [];
+    return posts.map(mapPost);
   } catch (error) {
     console.error(`Error fetching Ghost posts for tag ${tagSlug}:`, error);
-    return MOCK_POSTS.filter(p => p.primary_tag?.slug === tagSlug);
+    return [];
   }
 }
 
 export async function getPostBySlug(slug: string): Promise<GhostPost | null> {
-  // Check mock first if it's a known mock slug to avoid unnecessary API errors in logs
-  const mockPost = MOCK_POSTS.find(p => p.slug === slug);
-  
+  if (!GHOST_CONTENT_API_KEY) return null;
+
   const url = `${GHOST_API_URL}/ghost/api/content/posts/slug/${slug}/?key=${GHOST_CONTENT_API_KEY}&include=tags,authors`;
-  console.log(`Fetching Ghost post by slug ${slug} from: ${url}`);
-  
+
   try {
-    const res = await fetchWithTimeout(url, { next: { revalidate: 60 } });
-    
+    const res = await fetchWithTimeout(url, { next: { revalidate: 300 } });
+
     if (!res.ok) {
-      // Only log as error if it's NOT a mock slug, otherwise it's expected
-      if (!mockPost) {
-        const errorText = await res.text().catch(() => 'No error body');
-        console.error(`Failed to fetch Ghost post ${slug}: ${res.status}`, errorText);
+      if (res.status !== 401 && res.status !== 403) {
+        console.error(`Failed to fetch Ghost post ${slug}: ${res.status}`);
       }
-      return mockPost || null;
+      return null;
     }
-    
+
     const data = await res.json();
-    const post = data.posts?.[0] || null;
-    return post || mockPost || null;
+    const post = Array.isArray(data.posts) ? data.posts[0] : null;
+    return post ? mapPost(post) : null;
   } catch (error) {
-    if (!mockPost) {
-      console.error(`Error fetching Ghost post ${slug}:`, error);
-    }
-    return mockPost || null;
+    console.error(`Error fetching Ghost post ${slug}:`, error);
+    return null;
   }
 }

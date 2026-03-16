@@ -1,12 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Tenor+Sans&display=swap');
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+
+@source "../app/**/*.{ts,tsx,mdx}";
+@source "../src/**/*.{ts,tsx,mdx}";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Tenor Sans", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-tenor-sans), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   
   /* Feminine Beauty Palette */
   --color-primary: #B5838D; /* Dusty Rose */
@@ -44,7 +46,27 @@
   }
   
   body {
-    @apply font-sans antialiased bg-bg-light text-text-light transition-colors duration-300 selection:bg-primary selection:text-white;
+    @apply font-sans antialiased bg-bg-light text-text-light transition-colors duration-300 selection:bg-primary selection:text-white relative;
+  }
+  
+  /* Grain Overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.015;
+    pointer-events: none;
+    z-index: 9999;
+    background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+    filter: contrast(120%) brightness(100%);
+  }
+
+  .dark body::before {
+    opacity: 0.04;
+    filter: contrast(150%) brightness(100%);
   }
   
   .dark body {

@@ -3,7 +3,8 @@
 import React, { useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, ArrowUpRight, ShoppingBag, ChevronLeft, ChevronRight, Shield, CheckCircle, Mail } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, ShoppingBag, ChevronLeft, ChevronRight, Shield, CheckCircle, Mail, Star, Award, Zap, TrendingUp } from 'lucide-react';
+import { motion, AnimatePresence, Variants } from 'motion/react';
 
 interface GhostPost {
   id: string;
@@ -12,6 +13,7 @@ interface GhostPost {
   feature_image?: string;
   primary_tag?: { name: string; slug: string };
   custom_excerpt?: string;
+  excerpt?: string;
 }
 
 interface HomeClientProps {
@@ -22,6 +24,11 @@ interface HomeClientProps {
   heroBgImage: string;
 }
 
+const revealVariants: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+};
+
 export default function HomeClient({
   hotPost,
   organizationPosts,
@@ -29,293 +36,436 @@ export default function HomeClient({
   amazonProducts,
   heroBgImage,
 }: HomeClientProps) {
-  const sliderRef = useRef<HTMLDivElement>(null);
+  const [isSubscribed, setIsSubscribed] = React.useState(false);
+  const [homepageDisplayCount, setHomepageDisplayCount] = React.useState(8);
 
-  const scrollSlider = (direction: 'left' | 'right') => {
-    if (sliderRef.current) {
-      sliderRef.current.scrollBy({ left: direction === 'left' ? -280 : 280, behavior: 'smooth' });
-    }
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubscribed(true);
+    setTimeout(() => setIsSubscribed(false), 5000);
   };
 
   return (
     <main className="bg-bg-light dark:bg-bg-dark overflow-x-hidden transition-colors duration-300">
-      {/* Hero will be first for transparency */}
-
       {/* --- HERO SECTION --- */}
-      <section className="relative w-full h-[80vh] md:h-[85vh] min-h-[500px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
+      <section className="relative w-full h-[85vh] md:h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden">
+        <motion.div 
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className="absolute inset-0 z-0"
+        >
           <Image
             src={heroBgImage}
             alt="Glamorous Beauty"
             fill
-            className="object-cover object-center animate-slow-zoom"
+            className="object-cover object-center"
             priority
             sizes="100vw"
           />
           <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-black/50 to-transparent z-10 pointer-events-none" />
           <div className="absolute inset-0 bg-gray-900/10 dark:bg-black/30" />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent" />
-        </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/70 via-transparent to-transparent" />
+        </motion.div>
 
-        <div className="relative z-20 container mx-auto px-6 text-center text-white mt-12">
-          <div className="animate-fade-in-up">
-            <span className="inline-block py-1.5 px-5 border border-white/20 bg-white/5 backdrop-blur-md rounded-full text-[9px] font-bold tracking-[0.25em] uppercase mb-6 shadow-lg">
-              Est. 2024
+        <div className="relative z-20 container mx-auto px-6 text-center text-white">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 1 }}
+          >
+            <span className="inline-block py-1.5 px-5 border border-white/20 bg-white/5 backdrop-blur-md rounded-full text-[9px] font-bold tracking-[0.3em] uppercase mb-8 shadow-xl">
+              Editorial Excellence
             </span>
-            <h1 className="font-serif text-4xl md:text-7xl lg:text-8xl leading-tight md:leading-none mb-6 drop-shadow-lg font-bold tracking-tight">
-              Curated <span className="font-light text-primary-light">Beauty</span>
+            <h1 className="font-serif text-5xl md:text-8xl lg:text-9xl leading-[0.9] mb-8 drop-shadow-2xl font-bold tracking-tighter">
+              The New <br />
+              <span className="font-light italic text-primary-light">Standard</span>
             </h1>
-            <p className="text-sm md:text-lg text-gray-100 font-normal max-w-lg mx-auto leading-relaxed mb-8 drop-shadow-md">
-              Curated beauty and wellness for the modern woman. We believe in intentional self-care, ethical products, and timeless elegance.
+            <p className="text-sm md:text-xl text-gray-100 font-normal max-w-xl mx-auto leading-relaxed mb-10 drop-shadow-md">
+              Elevating your daily ritual through expert-vetted skincare, curated aesthetics, and intentional wellness.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
               <Link
                 href="/category/all"
-                className="w-full sm:w-auto bg-white text-text-light px-8 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-primary-light hover:text-text-light transition-colors"
+                className="group relative w-full sm:w-auto overflow-hidden bg-white text-text-light px-10 py-4 text-[10px] font-bold uppercase tracking-[0.2em] transition-all"
               >
-                Shop Beauty Finds
+                <span className="relative z-10">Discover The Edits</span>
+                <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
               </Link>
               <Link
                 href="/category/skincare"
-                className="w-full sm:w-auto bg-transparent border border-white text-white px-8 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-white hover:text-text-light transition-colors"
+                className="w-full sm:w-auto bg-transparent border border-white/50 text-white px-10 py-4 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-text-light transition-all"
               >
-                Skincare Hacks
+                Beauty Academy
               </Link>
             </div>
-          </div>
+          </motion.div>
+        </div>
+        
+        {/* Scroll Indicator */}
+        <motion.div 
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 hidden md:block"
+        >
+          <div className="w-[1px] h-12 bg-white/30" />
+        </motion.div>
+      </section>
+
+      {/* --- TRUST BAR --- */}
+      <section className="bg-white dark:bg-bg-dark border-b border-border-light dark:border-border-dark py-8 transition-colors duration-300">
+        <div className="container mx-auto px-6 max-w-7xl flex flex-wrap justify-center gap-10 md:gap-24">
+          <Link href="/about" className="trust-item group cursor-pointer hover:text-primary transition-colors">
+            <Shield size={16} className="text-primary group-hover:scale-110 transition-transform" />
+            <span>Expert Recommended</span>
+          </Link>
+          <Link href="/about" className="trust-item group cursor-pointer hover:text-primary transition-colors">
+            <CheckCircle size={16} className="text-primary group-hover:scale-110 transition-transform" />
+            <span>Unbiased Reviews</span>
+          </Link>
+          <Link href="/about" className="trust-item group cursor-pointer hover:text-primary transition-colors">
+            <Award size={16} className="text-primary group-hover:scale-110 transition-transform" />
+            <span>Tested & Verified</span>
+          </Link>
         </div>
       </section>
 
-      {/* --- TRUST BAR (Moved below Hero) --- */}
-      <section className="bg-white dark:bg-bg-dark border-b border-border-light dark:border-border-dark py-6 transition-colors duration-300">
-        <div className="container mx-auto px-6 max-w-7xl flex flex-wrap justify-center gap-8 md:gap-16">
-          <div className="trust-item">
-            <Shield size={14} className="text-primary" />
-            <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400">Expert Recommended</span>
-          </div>
-          <div className="trust-item">
-            <CheckCircle size={14} className="text-primary" />
-            <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400">Unbiased Reviews</span>
-          </div>
-          <div className="trust-item hidden sm:flex">
-            <ShoppingBag size={14} className="text-primary" />
-            <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400">Tested & Verified</span>
-          </div>
-        </div>
-      </section>
-
-      {/* --- SECTION 1: BEAUTY EDIT --- */}
-      <section className="bg-white dark:bg-bg-dark py-12 md:py-16 border-b border-border-light dark:border-border-dark overflow-hidden transition-colors duration-300">
+      {/* --- SECTION 1: BEAUTY EDIT (Rating Cards) --- */}
+      <motion.section 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={revealVariants}
+        className="bg-white dark:bg-bg-dark py-20 md:py-28 border-b border-border-light dark:border-border-dark overflow-hidden transition-colors duration-300"
+      >
         <div className="container mx-auto px-6 md:px-8 max-w-7xl relative">
-          <div className="flex justify-between items-end mb-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
             <div>
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 dark:text-gray-400 mb-2 block">The Edit</span>
-              <h3 className="font-serif text-2xl md:text-3xl text-text-light dark:text-text-dark font-bold tracking-tight">Beauty Favorites</h3>
+              <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary mb-3 block">Curated Selection</span>
+              <h3 className="font-serif text-3xl md:text-5xl text-text-light dark:text-text-dark font-bold tracking-tight">The Editor's Verdict</h3>
             </div>
-            <div className="flex gap-2 shrink-0">
-              <button onClick={() => scrollSlider('left')} className="w-9 h-9 md:w-10 md:h-10 border border-border-light dark:border-border-dark rounded-full flex items-center justify-center text-gray-500 hover:border-text-light dark:hover:border-text-dark hover:text-text-light dark:hover:text-text-dark transition-colors" aria-label="Scroll left">
-                <ChevronLeft size={16} />
-              </button>
-              <button onClick={() => scrollSlider('right')} className="w-9 h-9 md:w-10 md:h-10 border border-border-light dark:border-border-dark rounded-full flex items-center justify-center text-gray-500 hover:border-text-light dark:hover:border-text-dark hover:text-text-light dark:hover:text-text-dark transition-colors" aria-label="Scroll right">
-                <ChevronRight size={16} />
-              </button>
+            <div className="hidden md:flex items-center gap-2">
+              <Link href="/category/all" className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary hover:text-text-light dark:hover:text-white transition-colors flex items-center gap-2">
+                Explore The Entire Edit <ArrowRight size={14} />
+              </Link>
             </div>
           </div>
 
           <div
-            ref={sliderRef}
-            className="flex overflow-x-auto gap-4 md:gap-6 pb-6 snap-x snap-mandatory no-scrollbar -mx-6 px-6 md:mx-0 md:px-0 scroll-smooth"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 pb-12"
           >
-            {amazonProducts.map((prod) => (
-              <div key={prod.id} className="snap-center md:snap-start shrink-0 w-[160px] md:w-[260px] flex flex-col group select-none">
-                <Link href={`/post/${prod.slug}`} className="block relative aspect-[3/4] bg-gray-100 dark:bg-gray-800 mb-3 overflow-hidden rounded-sm cursor-pointer">
+            {amazonProducts.slice(0, 3).map((prod, idx) => (
+              <div key={prod.id} className="group flex flex-col relative w-full">
+                {/* Ranking Badge */}
+                <div className="absolute -top-4 -left-4 z-30 w-12 h-12 bg-bg-light dark:bg-bg-dark border border-primary/20 flex items-center justify-center font-serif text-xl font-bold shadow-lg">
+                  {idx + 1}
+                </div>
+                
+                <Link href={`/post/${prod.slug}`} className="block relative aspect-[4/5] bg-stone-50 dark:bg-gray-800 mb-4 overflow-hidden rounded-sm border border-border-light dark:border-border-dark">
                   {prod.feature_image && (
                     <Image
                       src={prod.feature_image}
                       alt={prod.title}
                       fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      sizes="(max-width: 768px) 160px, 260px"
-                      draggable={false}
+                      className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                      sizes="(max-width: 768px) 280px, 380px"
                     />
                   )}
-                  <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur p-2 rounded-full shadow-sm opacity-0 md:group-hover:opacity-100 transition-opacity">
-                    <ShoppingBag size={12} className="text-text-light" />
-                  </div>
                 </Link>
-                <h4 className="font-serif text-sm md:text-base text-text-light dark:text-text-dark font-bold truncate pr-2 group-hover:text-primary transition-colors">
-                  <Link href={`/post/${prod.slug}`}>{prod.title}</Link>
-                </h4>
-                <div className="flex justify-between items-center mt-1">
-                  <span className="text-[9px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-bold">
-                    {prod.custom_excerpt?.split('|')[0] || 'See Price'}
-                  </span>
-                  <span className="text-[9px] text-gray-400 dark:text-gray-500 uppercase tracking-widest">
-                    {prod.custom_excerpt?.split('|')[1] || 'Beauty'}
-                  </span>
+
+                {/* Editor's Score — always visible below the image */}
+                <div className="flex items-center justify-between mb-3 px-1">
+                  <div className="flex gap-1 text-primary">
+                    {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={11} fill="currentColor" />)}
+                  </div>
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-primary">Score: 9.8</span>
+                </div>
+                
+                <div className="px-1">
+                  <h4 className="font-serif text-xl text-text-light dark:text-text-dark font-bold group-hover:text-primary transition-colors leading-tight mb-2">
+                    <Link href={`/post/${prod.slug}`}>{prod.title}</Link>
+                  </h4>
+                  <div className="flex justify-between items-center border-t border-border-light dark:border-border-dark pt-4">
+                    <span className="text-[10px] text-primary uppercase tracking-[0.2em] font-bold">
+                      {prod.primary_tag?.name || 'Luxury Choice'}
+                    </span>
+                    <ShoppingBag size={14} className="text-gray-300" />
+                  </div>
                 </div>
               </div>
             ))}
             <Link
               href="/category/all"
-              className="snap-center md:snap-start shrink-0 w-[160px] md:w-[260px] flex flex-col items-center justify-center bg-bg-light dark:bg-bg-dark border border-border-light dark:border-border-dark text-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors aspect-[3/4] rounded-sm"
+              className="w-full flex flex-col items-center justify-center bg-stone-50 dark:bg-gray-900 border border-border-light dark:border-border-dark text-center hover:border-primary transition-all aspect-[4/5] rounded-sm group mb-6 lg:mb-0"
             >
-              <span className="font-serif text-base md:text-lg text-text-light dark:text-text-dark mb-2">View All</span>
-              <ArrowRight size={18} className="text-gray-400" />
+              <div className="w-12 h-12 rounded-full border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-4 group-hover:border-primary transition-colors">
+                <ArrowRight size={20} className="text-gray-400 group-hover:text-primary transition-colors" />
+              </div>
+              <span className="font-serif text-lg text-text-light dark:text-text-dark">Explore The <br />Entire Edit</span>
             </Link>
-            <div className="w-2 shrink-0 md:hidden" />
           </div>
+
         </div>
-      </section>
+      </motion.section>
 
       {/* --- SECTION 2: SKINCARE HACKS --- */}
-      <section className="py-16 md:py-20 bg-bg-light dark:bg-bg-dark transition-colors duration-300">
-        <div className="container mx-auto px-6 md:px-8 max-w-7xl">
-          <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16">
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 dark:text-gray-400 mb-4 block">Glow Up Series</span>
-            <h2 className="font-serif text-3xl md:text-5xl text-text-light dark:text-text-dark mb-4 md:mb-6">Skincare Simplified.</h2>
-            <p className="text-gray-500 dark:text-gray-400 font-light text-sm md:text-base leading-relaxed">Expert tips, product layering guides, and routines that enhance your natural glow without the overwhelm.</p>
-          </div>
+      <motion.section 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={revealVariants}
+        className="py-24 md:py-32 bg-bg-light dark:bg-bg-dark transition-colors duration-300 relative overflow-hidden"
+      >
+        {/* Decorative Background Elements */}
+        <div className="absolute left-0 top-1/4 text-[25rem] md:text-[35rem] font-serif font-bold text-primary/5 select-none pointer-events-none hidden lg:block -translate-x-1/4 leading-none transition-colors">
+          02
+        </div>
+        <div className="absolute right-0 top-1/2 text-[10rem] md:text-[15rem] font-serif font-bold text-primary/5 select-none pointer-events-none hidden lg:block translate-x-1/2 rotate-90">
+          EDITORIAL
+        </div>
+        <div className="absolute left-0 bottom-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[140px] -translate-x-1/2 translate-y-1/2 pointer-events-none" />
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {/* Featured wide card */}
-            {hotPost && (
-              <Link
-                href={`/post/${hotPost.slug}`}
-                className="lg:col-span-2 group relative h-[300px] md:h-[500px] overflow-hidden rounded-sm bg-gray-200 dark:bg-gray-800 block shadow-sm hover:shadow-lg transition-shadow"
-              >
-                {hotPost.feature_image && (
-                  <Image
-                    src={hotPost.feature_image}
-                    alt={hotPost.title}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 840px"
-                  />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent" />
-                <div className="absolute bottom-0 left-0 p-6 md:p-12 text-white">
-                  <span className="bg-primary/80 backdrop-blur border text-white border-white/30 text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 mb-3 inline-block">
-                    {hotPost.primary_tag?.name || 'Skincare'}
-                  </span>
-                  <h3 className="font-serif text-2xl md:text-4xl mb-3 leading-tight font-bold">{hotPost.title}</h3>
-                  <span className="inline-flex items-center text-[10px] font-bold uppercase tracking-widest hover:underline decoration-white underline-offset-4">
-                    Read Article <ArrowRight size={10} className="ml-2" />
-                  </span>
+        <div className="container mx-auto px-6 md:px-8 max-w-7xl relative">
+          <div className="flex flex-col lg:flex-row gap-16 md:gap-24 items-start">
+            <div className="w-full lg:w-[40%] sticky top-32 flex gap-10">
+              {/* Vertical Rail with Branding */}
+              <div className="hidden lg:flex flex-col items-center gap-6 py-4 border-r border-border-light dark:border-border-dark pr-8 shrink-0 h-full min-h-[1200px]">
+                <span className="rail-text">Est. {new Date().getFullYear() - 1}</span>
+                <div className="w-[1px] h-32 bg-primary/20" />
+                <span className="rail-text">Beauty Edits</span>
+                <div className="w-px flex-1 bg-gradient-to-b from-primary/20 via-primary/5 to-transparent mt-4" />
+                <span className="rail-text rotate-180 mb-20 whitespace-nowrap">Volume No. 01</span>
+              </div>
+
+              <div className="flex flex-col h-full space-y-16">
+                <div>
+                  <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary mb-4 block">The Masterclass</span>
+                  <h2 className="font-serif text-5xl md:text-7xl lg:text-8xl text-text-light dark:text-text-dark mb-8 leading-[1.05] font-bold tracking-tighter">Rituals <br />Defined.</h2>
+                  <p className="text-gray-500 dark:text-gray-400 font-light text-lg md:text-xl leading-relaxed italic max-w-md">
+                    Beyond products, beauty is about the intention behind the action. Discover our science-led guides.
+                  </p>
                 </div>
-              </Link>
-            )}
 
-            {/* Small side cards */}
-            <div className="flex flex-col gap-4 md:gap-6 justify-center">
-              {organizationPosts.slice(0, 3).map((post) => (
+                <div className="flex flex-col gap-10">
+                  <div className="flex items-center gap-6">
+                    <Link
+                      href="/category/skincare"
+                      className="inline-flex items-center gap-4 text-[11px] font-bold uppercase tracking-[0.2em] text-text-light dark:text-white border-b-2 border-primary pb-2 hover:gap-6 transition-all w-max"
+                    >
+                      Browse The Academy <ArrowRight size={14} />
+                    </Link>
+                  </div>
+
+                  {/* Expert Insight Card */}
+                  <div className="hidden lg:flex items-start gap-6 p-8 bg-white/40 dark:bg-white/5 backdrop-blur-md border border-border-light dark:border-border-dark shadow-sm relative group overflow-hidden">
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+                    <div className="relative w-24 h-32 shrink-0 bg-stone-100 dark:bg-gray-800">
+                       <div className="absolute inset-0 border border-primary/20 -m-2 z-0" />
+                       <div className="relative z-10 w-full h-full flex items-center justify-center text-primary/20 font-serif italic text-4xl select-none">E.H</div>
+                    </div>
+                    <div>
+                      <span className="text-[8px] font-bold uppercase tracking-[0.3em] text-primary mb-2 block">Editor's Highlight</span>
+                      <h5 className="font-serif text-lg text-text-light dark:text-white font-bold mb-2">Elena Haven</h5>
+                      <p className="text-[11px] text-gray-500 italic leading-relaxed mb-4">"Skincare is a marathon, not a sprint. We prioritize long-term skin health over instant results."</p>
+                      <span className="text-[8px] font-bold uppercase tracking-widest border-b border-primary/30 pb-0.5">Certified Aesthetician</span>
+                    </div>
+                  </div>
+
+                  {/* Trending Sidebar widget to fill vertical space */}
+                  <div className="space-y-6 pt-6 border-t border-border-light dark:border-border-dark">
+                    <h5 className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary flex items-center gap-2">
+                       <TrendingUp size={14} /> Must-Read Edits
+                    </h5>
+                    <div className="space-y-6">
+                      {organizationPosts.slice(3, 5).map((p, i) => (
+                        <Link key={p.id} href={`/post/${p.slug}`} className="group flex gap-4 items-center">
+                          <span className="font-serif text-3xl text-primary/20 font-bold">0{i+1}</span>
+                          <div>
+                            <h6 className="text-[13px] font-serif font-bold text-text-light dark:text-white group-hover:text-primary transition-colors leading-snug">{p.title}</h6>
+                            <span className="text-[9px] uppercase tracking-widest text-gray-400">5 min read</span>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Popular Topics Cloud */}
+                  <div className="space-y-4 pt-6">
+                    <h5 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">Popular in Academy</h5>
+                     <div className="flex flex-wrap gap-2">
+                        {['Acid Peels', 'Micro-needling', 'Double Cleansing', 'Retinal vs Retinol', 'Barrier Health'].map(tag => (
+                          <Link 
+                            key={tag} 
+                            href={`/category/skincare`}
+                            className="px-3 py-1.5 bg-stone-100 dark:bg-gray-800/50 text-[9px] font-bold uppercase tracking-widest text-text-light dark:text-gray-400 hover:text-primary transition-colors cursor-pointer border border-transparent hover:border-primary/20"
+                          >
+                            {tag}
+                          </Link>
+                        ))}
+                     </div>
+                  </div>
+                </div>
+
+                {/* Editorial Quote Card */}
+                <div className="hidden lg:block p-10 border-l-4 border-primary bg-stone-50/50 dark:bg-white/5 relative group shadow-sm">
+                   <div className="absolute -top-4 -left-4 font-serif text-6xl text-primary/10 select-none">“</div>
+                  <p className="font-serif italic text-2xl text-text-light dark:text-gray-300 leading-relaxed relative z-10">
+                    True beauty begins the moment you decide to be yourself and ritualize your self-care.
+                  </p>
+                  <div className="mt-8 flex items-center gap-4">
+                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-[10px] text-primary font-bold">EH</div>
+                     <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">Chief Editor, Elena</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full lg:w-3/5 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
+              {organizationPosts.slice(0, 3).map((post, idx) => (
                 <Link
                   key={post.id}
                   href={`/post/${post.slug}`}
-                  className="flex gap-4 items-center group bg-white dark:bg-gray-900 p-3 md:p-4 rounded-sm shadow-sm hover:shadow-md transition-shadow border border-border-light dark:border-border-dark"
+                  className={`group flex flex-col items-start ${idx === 0 ? 'md:col-span-2' : ''}`}
                 >
-                  <div className="relative w-16 h-16 md:w-20 md:h-20 bg-gray-200 dark:bg-gray-800 shrink-0 overflow-hidden rounded-sm">
+                  <div className={`relative w-full ${idx === 0 ? 'aspect-[21/9]' : 'aspect-square'} bg-gray-100 dark:bg-gray-800 overflow-hidden mb-6 rounded-sm`}>
                     {post.feature_image && (
                       <Image
                         src={post.feature_image}
                         alt={post.title}
                         fill
-                        className="object-cover grayscale group-hover:grayscale-0 transition-all"
-                        sizes="80px"
+                        className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                        sizes={idx === 0 ? "100vw" : "(max-width: 768px) 100vw, 50vw"}
                       />
                     )}
+                    <div className="absolute top-4 left-4 bg-primary px-3 py-1.5 text-[7px] font-bold tracking-[0.3em] uppercase text-white">
+                      MASTERCLASS
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-[9px] font-bold uppercase tracking-widest text-primary block mb-1">{post.primary_tag?.name || 'Beauty'}</span>
-                    <h4 className="font-serif text-sm md:text-base text-text-light dark:text-text-dark leading-tight group-hover:text-primary-dark dark:group-hover:text-primary transition-colors font-bold">{post.title}</h4>
+                  <h4 className={`font-serif ${idx === 0 ? 'text-3xl md:text-5xl' : 'text-xl md:text-2xl'} text-text-light dark:text-text-dark group-hover:text-primary transition-colors font-bold mb-4 leading-tight`}>
+                    {post.title}
+                  </h4>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base line-clamp-2 italic font-serif leading-relaxed">
+                    {post.excerpt || post.custom_excerpt}
+                  </p>
+                  <div className="mt-4 flex items-center gap-3 text-primary">
+                    <span className="text-[9px] font-bold uppercase tracking-widest">Begin Lesson</span>
+                    <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
                   </div>
                 </Link>
               ))}
-              <Link
-                href="/category/skincare"
-                className="mt-2 text-center text-[10px] font-bold uppercase tracking-widest text-text-light dark:text-text-dark border border-border-light dark:border-border-dark py-3 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-colors rounded-sm"
-              >
-                More Skincare Hacks
-              </Link>
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-
-      {/* --- SECTION 3: TRENDING NOW --- */}
-      <section className="container mx-auto px-6 md:px-8 max-w-7xl py-16 md:py-20 border-t border-border-light dark:border-border-dark">
-        <div className="flex items-end justify-between mb-10 md:mb-12">
-          <div>
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 dark:text-gray-400 mb-2 block">The Editorial</span>
-            <h3 className="font-serif text-2xl md:text-4xl text-text-light dark:text-text-dark font-bold tracking-tight">Trending Now</h3>
-          </div>
-          <Link
-            href="/category/all"
-            className="hidden md:flex gap-2 text-[10px] font-bold tracking-widest uppercase text-gray-400 dark:text-gray-500 hover:text-text-light dark:hover:text-text-dark transition-colors items-center"
-          >
-            View Archive <ArrowRight size={12} />
-          </Link>
+      {/* --- SECTION 3: TRENDING (The Gallery) --- */}
+      <motion.section 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={revealVariants}
+        className="container mx-auto px-6 md:px-8 max-w-7xl py-24 md:py-32 border-t border-border-light dark:border-border-dark"
+      >
+        <div className="text-center mb-16">
+          <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary mb-4 block">The Gallery</span>
+          <h3 className="font-serif text-4xl md:text-6xl text-text-light dark:text-text-dark font-bold">Trending Aesthetics</h3>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8 md:gap-x-6 md:gap-y-12">
-          {trendingPosts.slice(0, 8).map((post) => (
-            <article key={post.id} className="group flex flex-col h-full">
-              <Link href={`/post/${post.slug}`} className="block overflow-hidden bg-gray-100 dark:bg-gray-800 mb-3 relative aspect-[4/3] rounded-sm">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+          {trendingPosts.slice(0, homepageDisplayCount).map((post, idx) => (
+            <article key={post.id} className={`group flex flex-col ${idx % 2 !== 0 ? 'md:mt-12' : ''}`}>
+              <Link href={`/post/${post.slug}`} className="block overflow-hidden bg-gray-100 dark:bg-gray-800 mb-6 relative aspect-[3/4] rounded-sm">
                 {post.feature_image && (
                   <Image
                     src={post.feature_image}
                     alt={post.title}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="object-cover transition-transform duration-1000 group-hover:scale-110"
                     loading="lazy"
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes="(max-width: 768px) 50vw, 25vw"
                   />
                 )}
-                <div className="absolute top-2 right-2 bg-white/90 backdrop-blur p-1.5 rounded-full opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-                  <ArrowUpRight size={12} className="text-text-light" />
-                </div>
+                <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               </Link>
-              <div className="flex flex-col flex-1">
-                <span className="text-[9px] tracking-widest uppercase text-primary font-bold mb-1.5">{post.primary_tag?.name || 'Featured'}</span>
-                <h3 className="font-serif text-sm md:text-lg text-text-light dark:text-text-dark mb-2 leading-snug group-hover:text-primary transition-colors font-bold tracking-tight">
-                  <Link href={`/post/${post.slug}`}>{post.title}</Link>
-                </h3>
-              </div>
+              <span className="text-[9px] tracking-[0.2em] uppercase text-primary font-bold mb-2">0{idx + 1} — {post.primary_tag?.name || 'Featured'}</span>
+              <h3 className="font-serif text-base md:text-xl text-text-light dark:text-text-dark font-bold leading-tight group-hover:text-primary transition-colors">
+                <Link href={`/post/${post.slug}`}>{post.title}</Link>
+              </h3>
             </article>
           ))}
         </div>
 
-        <Link
-          href="/category/all"
-          className="md:hidden mt-10 w-full flex items-center justify-center gap-2 text-[10px] font-bold tracking-widest uppercase text-text-light dark:text-text-dark border border-border-light dark:border-border-dark py-3 rounded-sm active:bg-gray-100 dark:active:bg-gray-800"
-        >
-          View All Stories <ArrowRight size={12} />
-        </Link>
-      </section>
-
-      {/* --- NEWSLETTER SECTION --- */}
-      <section id="newsletter" className="bg-stone-50 dark:bg-gray-900 py-20 transition-colors duration-300">
-        <div className="container mx-auto px-6 max-w-4xl text-center">
-          <div className="flex justify-center mb-6">
-            <Mail className="text-primary" size={32} strokeWidth={1} />
-          </div>
-          <h2 className="font-serif text-3xl md:text-5xl text-gray-900 dark:text-white mb-6">Join The Inner Circle</h2>
-          <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base mb-10 max-w-xl mx-auto leading-relaxed">
-            Get our weekly editorial digest, luxury beauty finds, and members-only skincare secrets delivered directly to your inbox.
-          </p>
-          <form className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" onSubmit={(e) => e.preventDefault()}>
-            <input 
-              type="email" 
-              placeholder="YOUR EMAIL ADDRESS" 
-              className="flex-1 bg-white dark:bg-gray-800 border border-border-light dark:border-border-dark px-6 py-4 text-[10px] font-bold tracking-widest uppercase focus:outline-none focus:border-primary transition-colors"
-              required
-            />
-            <button className="bg-primary text-white px-8 py-4 text-[10px] font-bold tracking-widest uppercase hover:bg-primary-dark transition-all transform active:scale-95">
-              Subscribe Now
+        <div className="mt-12 text-center">
+          {homepageDisplayCount < trendingPosts.length ? (
+            <button 
+              onClick={() => setHomepageDisplayCount(prev => Math.min(prev + 4, trendingPosts.length))}
+              className="px-12 py-4 border border-border-light dark:border-border-dark text-[10px] font-bold uppercase tracking-[0.4em] text-gray-400 hover:text-primary hover:border-primary transition-all rounded-sm"
+            >
+              View More Trends
             </button>
-          </form>
-          <p className="text-[10px] text-gray-400 mt-6 uppercase tracking-widest">No spam. Only beauty. Unsubscribe anytime.</p>
+          ) : (
+            <button
+              disabled
+              className="px-12 py-4 border border-gray-200 dark:border-gray-800 text-[10px] font-bold uppercase tracking-[0.4em] text-gray-300 dark:text-gray-700 cursor-not-allowed rounded-sm"
+            >
+              No More Trends
+            </button>
+          )}
+        </div>
+      </motion.section>
+
+      {/* --- REFINED NEWSLETTER --- */}
+      <section className="bg-bg-light dark:bg-bg-dark py-12 border-t border-border-light dark:border-border-dark transition-colors duration-300">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="bg-stone-50 dark:bg-gray-900 px-8 py-10 md:px-16 md:py-12 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10 border border-border-light dark:border-border-dark">
+            <div className="absolute top-0 left-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 -translate-x-1/2 blur-2xl" />
+            
+            <div className="relative z-10 flex items-center gap-6 text-left max-w-2xl">
+              <div className="w-16 h-16 shrink-0 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                <Mail size={28} strokeWidth={1.5} />
+              </div>
+              <div>
+                <h2 className="font-serif text-3xl md:text-4xl text-gray-900 dark:text-white font-bold leading-tight">
+                  The Weekly <span className="italic font-light text-primary">Confidential.</span>
+                </h2>
+                <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base font-serif italic mt-2">
+                  Curated edits and luxury finds, delivered to 50,000+ beauty insiders.
+                </p>
+              </div>
+            </div>
+
+            <AnimatePresence mode="wait">
+              {!isSubscribed ? (
+                <motion.form 
+                  key="form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="relative z-10 flex flex-col sm:flex-row gap-0 w-full lg:w-max min-w-[320px] md:min-w-[450px] border border-gray-900 dark:border-white shadow-lg" 
+                  onSubmit={handleSubscribe}
+                >
+                  <input 
+                    type="email" 
+                    placeholder="YOUR EMAIL" 
+                    className="flex-1 bg-white dark:bg-gray-800 px-6 py-4 text-[10px] font-bold tracking-[0.2em] uppercase focus:outline-none"
+                    required
+                  />
+                  <button className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-8 py-4 text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-primary dark:hover:bg-primary hover:text-white transition-all whitespace-nowrap">
+                    Subscribe
+                  </button>
+                </motion.form>
+              ) : (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="relative z-10 py-4 px-8 border-2 border-primary text-primary font-bold text-[10px] uppercase tracking-widest bg-primary/5"
+                >
+                  Welcome to the inner circle. check your inbox soon.
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </section>
     </main>

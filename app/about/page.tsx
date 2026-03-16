@@ -171,9 +171,9 @@ export default function About() {
             Whether you have a product question or want to share your own glow-up story, our digital doors are always open.
           </p>
           <div className="flex justify-center gap-4 mb-12">
-            <a href="#" className="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full border border-border-light dark:border-border-dark hover:text-primary transition-colors"><Instagram size={18} /></a>
-            <a href="#" className="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full border border-border-light dark:border-border-dark hover:text-primary transition-colors"><Twitter size={18} /></a>
-            <a href="#" className="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full border border-border-light dark:border-border-dark hover:text-primary transition-colors"><Youtube size={18} /></a>
+            <a href="https://instagram.com/glamgirlshaven" target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full border border-border-light dark:border-border-dark hover:text-primary transition-colors"><Instagram size={18} /></a>
+            <a href="https://twitter.com/glamgirlshaven" target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full border border-border-light dark:border-border-dark hover:text-primary transition-colors"><Twitter size={18} /></a>
+            <a href="https://youtube.com/@glamgirlshaven" target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full border border-border-light dark:border-border-dark hover:text-primary transition-colors"><Youtube size={18} /></a>
             <a href="mailto:hello@glamgirlshaven.com" className="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full border border-border-light dark:border-border-dark hover:text-primary transition-colors"><Mail size={18} /></a>
           </div>
           <Link href="/contact" className="inline-block px-14 py-5 bg-primary text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-primary-dark transition-all transform hover:-translate-y-1 shadow-lg">

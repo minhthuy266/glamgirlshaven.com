@@ -23,11 +23,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const siteUrl = 'https://glamgirlshaven.com';
   const url = `${siteUrl}/post/${post.slug}`;
-  const image = post.feature_image || `${siteUrl}/og-default.jpg`;
+  const image = post.feature_image || 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?q=80&w=1200&auto=format&fit=crop';
+  const description = post.custom_excerpt || post.excerpt || '';
+  const title = post.title || 'GlamGirls Haven Article';
 
   return {
-    title: post.title,
-    description: post.custom_excerpt || post.excerpt,
+    metadataBase: new URL(siteUrl),
+    title,
+    description,
     alternates: { canonical: url },
     openGraph: {
       title: post.title,
@@ -85,7 +88,7 @@ export default async function PostPage({ params }: Props) {
     description: post.custom_excerpt || post.excerpt,
     image: [post.feature_image],
     datePublished: post.published_at,
-    dateModified: post.published_at,
+    dateModified: post.updated_at || post.published_at,
     author: { '@type': 'Person', name: post.primary_author?.name || 'GlamGirls Haven' },
     publisher: {
       '@type': 'Organization',
@@ -107,7 +110,7 @@ export default async function PostPage({ params }: Props) {
     },
     'reviewRating': {
       '@type': 'Rating',
-      'ratingValue': '4.8',
+      'ratingValue': post.custom_excerpt?.match(/(\d\.\d)\s*\/\s*5/)?.[1] ?? '4.5',
       'bestRating': '5'
     },
     'author': { '@type': 'Person', 'name': post.primary_author?.name || 'GlamGirls Haven' },
