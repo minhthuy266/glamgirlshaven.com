@@ -43,7 +43,7 @@ export function Footer() {
             </h4>
             <ul className="space-y-5 text-sm font-medium text-gray-500 dark:text-gray-400">
               <li><Link href="/category/skincare" className="hover:text-primary transition-colors hover:pl-2 transition-all block">Skincare</Link></li>
-              <li><Link href="/category/makeup" className="hover:text-primary transition-colors hover:pl-2 transition-all block">Makeup</Link></li>
+              <li><Link href="/category/make-up" className="hover:text-primary transition-colors hover:pl-2 transition-all block">Makeup</Link></li>
               <li><Link href="/category/haircare" className="hover:text-primary transition-colors hover:pl-2 transition-all block">Haircare</Link></li>
               <li><Link href="/category/wellness-self-love" className="hover:text-primary transition-colors hover:pl-2 transition-all block">Wellness</Link></li>
             </ul>

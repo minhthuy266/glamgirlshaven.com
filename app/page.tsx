@@ -23,10 +23,12 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  // Fetch all posts + amazon-tagged posts in parallel
-  const [posts, amazonPosts] = await Promise.all([
+  // Fetch all posts + specific sections in parallel
+  const [posts, verdictPosts, masterclassPosts, trendingTaggedPosts] = await Promise.all([
     getPosts(),
-    getPostsByTag('amazon-finds'),
+    getPostsByTag('editors-verdict'),
+    getPostsByTag('masterclass'),
+    getPostsByTag('trending'),
   ]);
 
   const hotPost =
@@ -34,27 +36,30 @@ export default async function HomePage() {
     posts[0] || 
     null;
 
-  const organizationPosts = posts.filter((p) =>
-    p.tags?.some((t) => ['skincare', 'wellness', 'makeup'].includes(t.slug)),
-  );
+  // Use real Masterclass-tagged posts; fall back to specific categories if none tagged
+  const finalMasterclassPosts = masterclassPosts.length > 0 
+    ? masterclassPosts 
+    : posts.filter((p) => p.tags?.some((t) => ['skincare', 'wellness', 'makeup'].includes(t.slug)));
 
-  const finalOrganizationPosts = organizationPosts.length > 0 ? organizationPosts : posts.slice(0, 4);
-  const trendingPosts = posts.filter((p) => hotPost ? p.id !== hotPost.id : true);
+  // Use Trending-tagged posts first, otherwise fallback to general posts (excluding hot post)
+  const finalTrendingPosts = trendingTaggedPosts.length > 0
+    ? trendingTaggedPosts
+    : posts.filter((p) => hotPost ? p.id !== hotPost.id : true);
 
   // Use hotPost's feature_image for hero, fall back to Unsplash default
   const heroBgImage = hotPost?.feature_image?.startsWith('http')
     ? hotPost.feature_image
     : FALLBACK_HERO;
 
-  // Use real Amazon-tagged Ghost posts; fall back to first 3 site posts if none tagged
-  const amazonProducts: GhostPost[] = amazonPosts.length > 0 ? amazonPosts.slice(0, 4) : posts.slice(0, 4);
+  // Use real Verdict-tagged Ghost posts; fall back to first 3 site posts if none tagged
+  const verdictProducts: GhostPost[] = verdictPosts.length > 0 ? verdictPosts.slice(0, 4) : posts.slice(0, 4);
 
   return (
     <HomeClient
       hotPost={hotPost}
-      organizationPosts={finalOrganizationPosts}
-      trendingPosts={trendingPosts}
-      amazonProducts={amazonProducts}
+      masterclassPosts={finalMasterclassPosts}
+      trendingPosts={finalTrendingPosts}
+      verdictProducts={verdictProducts}
       heroBgImage={heroBgImage}
     />
   );

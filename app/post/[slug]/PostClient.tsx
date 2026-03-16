@@ -23,7 +23,17 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
   const [readingProgress, setReadingProgress] = useState(0);
 
   // Detect affiliate content to show disclosure
-  const hasAffiliateLinks = post.html?.includes('amazon.com') || post.html?.includes('amzn.to') || post.tags?.some(t => ['amazon-finds','shop-the-look','splurge-vs-save','gift-guides'].includes(t.slug));
+  const affiliateTagSlugs = new Set([
+    'amazon-finds',
+    'shop-the-look',
+    'splurge-vs-save',
+    'gift-guides',
+    'product-review',
+    'editor-choice',
+  ]);
+  const hasAmazonLink = /https?:\/\/(?:www\.)?(?:amazon\.[a-z.]+|amzn\.to)\//i.test(post.html || '');
+  const hasAffiliateTag = post.tags?.some((t) => affiliateTagSlugs.has(t.slug)) || false;
+  const hasAffiliateLinks = hasAmazonLink || hasAffiliateTag;
 
   useEffect(() => {
     if (!post?.html) return;
@@ -79,6 +89,20 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
         } else {
           img.setAttribute('src', `${process.env.NEXT_PUBLIC_SITE_URL || 'https://glamgirlshaven.com'}${src}`);
         }
+      }
+    });
+
+    // Mark Amazon links as sponsored/nofollow, and open in new tab.
+    const links = doc.querySelectorAll('a[href]');
+    links.forEach((a) => {
+      const href = a.getAttribute('href') || '';
+      if (/^https?:\/\/(?:www\.)?(?:amazon\.[a-z.]+|amzn\.to)\//i.test(href)) {
+        const existingRel = (a.getAttribute('rel') || '').split(/\s+/).filter(Boolean);
+        const rel = new Set(existingRel);
+        rel.add('nofollow');
+        rel.add('sponsored');
+        a.setAttribute('rel', Array.from(rel).join(' '));
+        if (!a.getAttribute('target')) a.setAttribute('target', '_blank');
       }
     });
 

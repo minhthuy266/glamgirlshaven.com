@@ -14,13 +14,14 @@ interface GhostPost {
   primary_tag?: { name: string; slug: string };
   custom_excerpt?: string;
   excerpt?: string;
+  tags?: { name: string; slug: string }[]; // Added tags property for score extraction
 }
 
 interface HomeClientProps {
   hotPost: GhostPost | undefined;
-  organizationPosts: GhostPost[];
+  masterclassPosts: GhostPost[];
   trendingPosts: GhostPost[];
-  amazonProducts: GhostPost[];
+  verdictProducts: GhostPost[];
   heroBgImage: string;
 }
 
@@ -31,9 +32,9 @@ const revealVariants: Variants = {
 
 export default function HomeClient({
   hotPost,
-  organizationPosts,
+  masterclassPosts,
   trendingPosts,
-  amazonProducts,
+  verdictProducts,
   heroBgImage,
 }: HomeClientProps) {
   const [isSubscribed, setIsSubscribed] = React.useState(false);
@@ -86,14 +87,14 @@ export default function HomeClient({
             </p>
             <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
               <Link
-                href="/category/all"
+                href="/category/editors-verdict"
                 className="group relative w-full sm:w-auto overflow-hidden bg-white text-text-light px-10 py-4 text-[10px] font-bold uppercase tracking-[0.2em] transition-all"
               >
                 <span className="relative z-10">Discover The Edits</span>
                 <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
               </Link>
               <Link
-                href="/category/skincare"
+                href="/category/masterclass"
                 className="w-full sm:w-auto bg-transparent border border-white/50 text-white px-10 py-4 text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-text-light transition-all"
               >
                 Beauty Academy
@@ -154,46 +155,65 @@ export default function HomeClient({
           <div
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 pb-12"
           >
-            {amazonProducts.slice(0, 3).map((prod, idx) => (
-              <div key={prod.id} className="group flex flex-col relative w-full">
-                {/* Ranking Badge */}
-                <div className="absolute -top-4 -left-4 z-30 w-12 h-12 bg-bg-light dark:bg-bg-dark border border-primary/20 flex items-center justify-center font-serif text-xl font-bold shadow-lg">
-                  {idx + 1}
-                </div>
-                
-                <Link href={`/post/${prod.slug}`} className="block relative aspect-[4/5] bg-stone-50 dark:bg-gray-800 mb-4 overflow-hidden rounded-sm border border-border-light dark:border-border-dark">
-                  {prod.feature_image && (
-                    <Image
-                      src={prod.feature_image}
-                      alt={prod.title}
-                      fill
-                      className="object-cover transition-transform duration-1000 group-hover:scale-110"
-                      sizes="(max-width: 768px) 280px, 380px"
-                    />
-                  )}
-                </Link>
+            {verdictProducts.slice(0, 3).map((prod, idx) => {
+              // Extract score from tags (handle both internal #score: and public score- tags)
+              const scoreTag = prod.tags?.find(t => 
+                t.name.toLowerCase().startsWith('#score:') || 
+                t.slug.startsWith('hash-score-') || // Internal tag slug format
+                t.slug.startsWith('score-')        // Public tag slug format
+              );
+              
+              let scoreValue = '9.8'; // Default fallback
+              if (scoreTag) {
+                // If it's a slug like 'score-9-2', convert to '9.2'
+                if (scoreTag.slug.includes('score-')) {
+                  scoreValue = scoreTag.slug.replace('hash-score-', '').replace('score-', '').replace('-', '.');
+                } else {
+                  scoreValue = scoreTag.name.split(':')[1] || '9.8';
+                }
+              }
 
-                {/* Editor's Score — always visible below the image */}
-                <div className="flex items-center justify-between mb-3 px-1">
-                  <div className="flex gap-1 text-primary">
-                    {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={11} fill="currentColor" />)}
+              return (
+                <div key={prod.id} className="group flex flex-col relative w-full">
+                  {/* Ranking Badge */}
+                  <div className="absolute -top-4 -left-4 z-30 w-12 h-12 bg-bg-light dark:bg-bg-dark border border-primary/20 flex items-center justify-center font-serif text-xl font-bold shadow-lg">
+                    {idx + 1}
                   </div>
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-primary">Score: 9.8</span>
-                </div>
-                
-                <div className="px-1">
-                  <h4 className="font-serif text-xl text-text-light dark:text-text-dark font-bold group-hover:text-primary transition-colors leading-tight mb-2">
-                    <Link href={`/post/${prod.slug}`}>{prod.title}</Link>
-                  </h4>
-                  <div className="flex justify-between items-center border-t border-border-light dark:border-border-dark pt-4">
-                    <span className="text-[10px] text-primary uppercase tracking-[0.2em] font-bold">
-                      {prod.primary_tag?.name || 'Luxury Choice'}
-                    </span>
-                    <ShoppingBag size={14} className="text-gray-300" />
+                  
+                  <Link href={`/post/${prod.slug}`} className="block relative aspect-[4/5] bg-stone-50 dark:bg-gray-800 mb-4 overflow-hidden rounded-sm border border-border-light dark:border-border-dark">
+                    {prod.feature_image && (
+                      <Image
+                        src={prod.feature_image}
+                        alt={prod.title}
+                        fill
+                        className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                        sizes="(max-width: 768px) 280px, 380px"
+                      />
+                    )}
+                  </Link>
+
+                  {/* Editor's Score — dynamic from tag */}
+                  <div className="flex items-center justify-between mb-3 px-1">
+                    <div className="flex gap-1 text-primary">
+                      {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={11} fill="currentColor" />)}
+                    </div>
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-primary">Score: {scoreValue}</span>
+                  </div>
+                  
+                  <div className="px-1">
+                    <h4 className="font-serif text-xl text-text-light dark:text-text-dark font-bold group-hover:text-primary transition-colors leading-tight mb-2">
+                      <Link href={`/post/${prod.slug}`}>{prod.title}</Link>
+                    </h4>
+                    <div className="flex justify-between items-center border-t border-border-light dark:border-border-dark pt-4">
+                      <span className="text-[10px] text-primary uppercase tracking-[0.2em] font-bold">
+                        {prod.primary_tag?.name || 'Editor\'s Choice'}
+                      </span>
+                      <ShoppingBag size={14} className="text-gray-300" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             <Link
               href="/category/all"
               className="w-full flex flex-col items-center justify-center bg-stone-50 dark:bg-gray-900 border border-border-light dark:border-border-dark text-center hover:border-primary transition-all aspect-[4/5] rounded-sm group mb-6 lg:mb-0"
@@ -277,7 +297,7 @@ export default function HomeClient({
                        <TrendingUp size={14} /> Must-Read Edits
                     </h5>
                     <div className="space-y-6">
-                      {organizationPosts.slice(3, 5).map((p, i) => (
+                      {masterclassPosts.slice(3, 5).map((p, i) => (
                         <Link key={p.id} href={`/post/${p.slug}`} className="group flex gap-4 items-center">
                           <span className="font-serif text-3xl text-primary/20 font-bold">0{i+1}</span>
                           <div>
@@ -321,7 +341,7 @@ export default function HomeClient({
             </div>
 
             <div className="w-full lg:w-3/5 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
-              {organizationPosts.slice(0, 3).map((post, idx) => (
+              {masterclassPosts.slice(0, 3).map((post, idx) => (
                 <Link
                   key={post.id}
                   href={`/post/${post.slug}`}
