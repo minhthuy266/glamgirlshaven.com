@@ -13,6 +13,7 @@ const nextConfig = {
       { protocol: 'http', hostname: '**' },
     ],
   },
+  output: 'standalone',
 };
 
 module.exports = nextConfig;
