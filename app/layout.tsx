@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Manrope, Tenor_Sans } from 'next/font/google';
 import { Header } from '@/src/components/layout/Header';
 import { Footer } from '@/src/components/layout/Footer';
-import { CookieBanner } from '@/src/components/layout/CookieBanner';
+// import { CookieBanner } from '@/src/components/layout/CookieBanner';
 import { ThemeProvider } from '@/src/components/theme-provider';
 import './globals.css';
 
@@ -45,7 +45,7 @@ export default function RootLayout({
               {children}
             </main>
             <Footer />
-            <CookieBanner />
+{/* <CookieBanner /> */}
           </div>
         </ThemeProvider>
       </body>
