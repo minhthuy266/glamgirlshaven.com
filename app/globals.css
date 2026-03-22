@@ -156,7 +156,7 @@
   .gh-content h1, .gh-content h2, .gh-content h3,
   .gh-content h4, .gh-content h5, .gh-content h6 {
     font-family: var(--font-serif);
-    color: var(--color-text-light);
+    color: var(--color-text-light) !important;
     font-weight: 400;
     letter-spacing: 0.05em;
     margin-top: 2.5rem;
@@ -165,9 +165,9 @@
     text-transform: uppercase;
     scroll-margin-top: 100px !important;
   }
-  .dark .gh-content h1, .dark .gh-content h2, .dark .gh-content h3,
-  .dark .gh-content h4, .dark .gh-content h5, .dark .gh-content h6 {
-    color: var(--color-text-dark);
+  html.dark .gh-content h1, html.dark .gh-content h2, html.dark .gh-content h3,
+  html.dark .gh-content h4, html.dark .gh-content h5, html.dark .gh-content h6 {
+    color: var(--color-text-dark) !important;
   }
   
   @media (min-width: 768px) {
@@ -181,8 +181,8 @@
     border-bottom: 1px solid var(--color-border-light);
     padding-bottom: 0.5rem;
   }
-  .dark .gh-content h2 {
-    border-bottom: 1px solid var(--color-border-dark);
+  html.dark .gh-content h2 {
+    border-bottom: 1px solid var(--color-border-dark) !important;
   }
   
   .gh-content h3 { font-size: 1.25rem; }
@@ -328,9 +328,9 @@
     color: var(--color-text-light);
     line-height: 1.4;
   }
-  .dark .gh-content blockquote {
-    border-left: 2px solid var(--color-text-dark);
-    color: var(--color-text-dark);
+  html.dark .gh-content blockquote {
+    border-left: 2px solid var(--color-text-dark) !important;
+    color: var(--color-text-dark) !important;
   }
 
 

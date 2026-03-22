@@ -336,7 +336,7 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
 
               {/* Article Body — rendered only after client-side DOMParser run (sanitises the HTML) */}
               <div
-                className="gh-content max-w-none prose prose-stone prose-base md:prose-lg mx-auto prose-headings:font-serif prose-headings:font-normal prose-img:rounded-sm prose-img:w-full"
+                className="gh-content max-w-none prose prose-stone dark:prose-invert prose-base md:prose-lg mx-auto prose-headings:font-serif prose-headings:font-normal prose-img:rounded-sm prose-img:w-full"
                 dangerouslySetInnerHTML={{ __html: processedHtml }}
               />
 
@@ -351,7 +351,7 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
                           src={trendingPosts[0].feature_image} 
                           alt={trendingPosts[0].title}
                           fill
-                          className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                          className="object-cover transition-transform duration-1000 md:group-hover:scale-110"
                         />
                       )}
                     </div>
@@ -383,7 +383,7 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
                           src={trend.feature_image}
                           alt={trend.title}
                           fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-105"
+                          className="object-cover transition-transform duration-700 md:group-hover:scale-105"
                           loading="lazy"
                           sizes="208px"
                         />
@@ -413,7 +413,7 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
                         src={trend.feature_image}
                         alt={trend.title}
                         fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        className="object-cover transition-transform duration-700 md:group-hover:scale-105"
                         loading="lazy"
                         sizes="50vw"
                       />

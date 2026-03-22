@@ -6,7 +6,7 @@ import 'server-only';
 import type { GhostPost } from './types';
 export type { GhostPost };
 
-export const GHOST_API_URL = process.env.GHOST_API_URL || 'https://glamgirlshaven.com';
+export const GHOST_API_URL = process.env.GHOST_API_URL || 'https://api.glamgirlshaven.com';
 export const GHOST_CONTENT_API_KEY = process.env.GHOST_CONTENT_API_KEY || '';
 
 if (!GHOST_CONTENT_API_KEY) {
@@ -69,12 +69,12 @@ const mapPost = (p: any): GhostPost => ({
 });
 
 // Base query params shared by all list requests
-const BASE_PARAMS = `key=${GHOST_CONTENT_API_KEY}&include=tags,authors&filter=status:published&limit=50`;
+const BASE_PARAMS = `key=${GHOST_CONTENT_API_KEY}&include=tags,authors&limit=50`;
 
 export async function getPosts(): Promise<GhostPost[]> {
   if (!GHOST_CONTENT_API_KEY) return [];
 
-  const url = `${GHOST_API_URL}/ghost/api/content/posts/?${BASE_PARAMS}`;
+  const url = `${GHOST_API_URL}/ghost/api/content/posts/?${BASE_PARAMS}&filter=status:published`;
   try {
     const res = await fetchWithTimeout(url, { next: { revalidate: 300 } });
 
@@ -102,6 +102,7 @@ export async function getPosts(): Promise<GhostPost[]> {
 export async function getPostsByTag(tagSlug: string): Promise<GhostPost[]> {
   if (!GHOST_CONTENT_API_KEY) return [];
 
+  // Important: Join filters with '+' (url-encoded as %2B) into a single 'filter' parameter
   const url = `${GHOST_API_URL}/ghost/api/content/posts/?${BASE_PARAMS}&filter=status:published%2Btag:${tagSlug}`;
   try {
     const res = await fetchWithTimeout(url, { next: { revalidate: 300 } });
@@ -125,7 +126,7 @@ export async function getPostsByTag(tagSlug: string): Promise<GhostPost[]> {
 export async function getPostBySlug(slug: string): Promise<GhostPost | null> {
   if (!GHOST_CONTENT_API_KEY) return null;
 
-  const url = `${GHOST_API_URL}/ghost/api/content/posts/slug/${slug}/?key=${GHOST_CONTENT_API_KEY}&include=tags,authors`;
+  const url = `${GHOST_API_URL}/ghost/api/content/posts/slug/${slug}/?${BASE_PARAMS}`;
 
   try {
     const res = await fetchWithTimeout(url, { next: { revalidate: 300 } });

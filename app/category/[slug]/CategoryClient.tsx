@@ -58,7 +58,7 @@ export default function CategoryClient({ initialPosts, categoryName }: CategoryC
                 <img 
                   src={featuredPost.feature_image || ''} 
                   alt={featuredPost.title}
-                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-1000 md:group-hover:scale-105"
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 bg-black/10 transition-colors duration-500 group-hover:bg-transparent" />
@@ -121,7 +121,7 @@ export default function CategoryClient({ initialPosts, categoryName }: CategoryC
                   <img 
                     src={post.feature_image} 
                     alt={post.title}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-1000 md:group-hover:scale-110"
                     referrerPolicy="no-referrer"
                   />
                 ) : (

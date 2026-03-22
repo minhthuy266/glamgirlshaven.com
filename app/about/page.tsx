@@ -2,8 +2,22 @@
 
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { Instagram, Twitter, Youtube, Mail, ShieldCheck, Heart, Sparkles } from 'lucide-react';
+import { Mail, ShieldCheck, Heart, Sparkles } from 'lucide-react';
 import Image from 'next/image';
+
+const PinterestIcon = ({ size = 24, className = "" }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="currentColor"
+    className={className}
+    stroke="transparent"
+  >
+    <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.951-7.252 4.188 0 7.427 2.981 7.427 6.953 0 4.167-2.626 7.525-6.275 7.525-1.225 0-2.376-.637-2.768-1.385l-.754 2.872c-.27 1.033-1.002 2.324-1.492 3.116 1.144.352 2.361.542 3.618.542 6.621 0 11.988-5.367 11.988-11.988 0-6.62-5.367-11.987-11.988-11.987z"/>
+  </svg>
+);
 
 export default function About() {
   return (
@@ -46,13 +60,13 @@ export default function About() {
             className="relative aspect-[4/5] rounded-sm overflow-hidden bg-stone-100 shadow-2xl order-2 lg:order-1"
           >
             <img 
-              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop" 
-              alt="Editor in Chief" 
+              src="https://images.unsplash.com/photo-1599305090598-fe179d501227?q=80&w=800&auto=format&fit=crop" 
+              alt="Luxury Beauty Aesthetics" 
               className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
             />
             <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/60 to-transparent text-white">
-              <p className="text-[10px] font-bold uppercase tracking-widest mb-1">Founder & Editor-in-Chief</p>
-              <h3 className="font-serif text-2xl">Sophia Sterling</h3>
+              <p className="text-[10px] font-bold uppercase tracking-widest mb-1">The Collective</p>
+              <h3 className="font-serif text-2xl">GlamGirls Haven Editorial</h3>
             </div>
           </motion.div>
           
@@ -171,10 +185,8 @@ export default function About() {
             Whether you have a product question or want to share your own glow-up story, our digital doors are always open.
           </p>
           <div className="flex justify-center gap-4 mb-12">
-            <a href="https://instagram.com/glamgirlshaven" target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full border border-border-light dark:border-border-dark hover:text-primary transition-colors"><Instagram size={18} /></a>
-            <a href="https://twitter.com/glamgirlshaven" target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full border border-border-light dark:border-border-dark hover:text-primary transition-colors"><Twitter size={18} /></a>
-            <a href="https://youtube.com/@glamgirlshaven" target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full border border-border-light dark:border-border-dark hover:text-primary transition-colors"><Youtube size={18} /></a>
-            <a href="mailto:hello@glamgirlshaven.com" className="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full border border-border-light dark:border-border-dark hover:text-primary transition-colors"><Mail size={18} /></a>
+            <a href="https://www.pinterest.com/glamgirlshaven/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full border border-border-light dark:border-border-dark hover:text-primary transition-colors"><PinterestIcon size={18} /></a>
+            <a href="mailto:glamgirlshaven.blog@gmail.com" className="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full border border-border-light dark:border-border-dark hover:text-primary transition-colors"><Mail size={18} /></a>
           </div>
           <Link href="/contact" className="inline-block px-14 py-5 bg-primary text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-primary-dark transition-all transform hover:-translate-y-1 shadow-lg">
             Work With Our Editorial Team

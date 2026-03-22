@@ -24,10 +24,10 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   // Fetch all posts + specific sections in parallel
-  const [posts, verdictPosts, masterclassPosts, trendingTaggedPosts] = await Promise.all([
+  const [posts, verdictPosts, academyPosts, trendingTaggedPosts] = await Promise.all([
     getPosts(),
     getPostsByTag('editors-verdict'),
-    getPostsByTag('masterclass'),
+    getPostsByTag('academy'),
     getPostsByTag('trending'),
   ]);
 
@@ -39,26 +39,23 @@ export default async function HomePage() {
   
   const hotPost = heroPost || posts[0] || null;
 
-  // Use real Masterclass-tagged posts; fall back to specific categories if none tagged
-  const finalMasterclassPosts = masterclassPosts.length > 0 
-    ? masterclassPosts 
-    : posts.filter((p) => p.tags?.some((t) => ['skincare', 'wellness', 'makeup'].includes(t.slug)));
+  // Use real Academy-tagged posts ONLY
+  const finalAcademyPosts = academyPosts;
 
-  // Use Trending-tagged posts first, otherwise fallback to general posts (excluding hot post)
-  const finalTrendingPosts = trendingTaggedPosts.length > 0
-    ? trendingTaggedPosts
-    : posts.filter((p) => hotPost ? p.id !== hotPost.id : true);
+  // Use Trending-tagged posts ONLY
+  const finalTrendingPosts = trendingTaggedPosts;
 
-  // Use real Verdict-tagged Ghost posts; fall back to first 3 site posts if none tagged
-  const verdictProducts: GhostPost[] = verdictPosts.length > 0 ? verdictPosts.slice(0, 4) : posts.slice(0, 4);
+  // Use real Verdict-tagged Ghost posts ONLY
+  const verdictProducts: GhostPost[] = verdictPosts.slice(0, 4);
 
   return (
     <HomeClient
       hotPost={hotPost}
-      masterclassPosts={finalMasterclassPosts}
+      masterclassPosts={finalAcademyPosts}
       trendingPosts={finalTrendingPosts}
       verdictProducts={verdictProducts}
       heroBgImage={heroBgImage}
+      allPosts={posts}
     />
   );
 }

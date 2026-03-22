@@ -36,7 +36,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h4 className="text-sm font-bold uppercase tracking-widest text-text-light dark:text-white mb-1">General Inquiries</h4>
-                  <p className="text-sm text-gray-500">hello@glamgirlshaven.com</p>
+                  <p className="text-sm text-gray-500">glamgirlshaven.blog@gmail.com</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -45,7 +45,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h4 className="text-sm font-bold uppercase tracking-widest text-text-light dark:text-white mb-1">Partnerships</h4>
-                  <p className="text-sm text-gray-500">collabs@glamgirlshaven.com</p>
+                  <p className="text-sm text-gray-500">glamgirlshaven.blog@gmail.com</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">

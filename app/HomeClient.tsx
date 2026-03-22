@@ -23,6 +23,7 @@ interface HomeClientProps {
   trendingPosts: GhostPost[];
   verdictProducts: GhostPost[];
   heroBgImage: string;
+  allPosts: GhostPost[];
 }
 
 const revealVariants: Variants = {
@@ -36,9 +37,11 @@ export default function HomeClient({
   trendingPosts,
   verdictProducts,
   heroBgImage,
+  allPosts,
 }: HomeClientProps) {
   const [isSubscribed, setIsSubscribed] = React.useState(false);
   const [homepageDisplayCount, setHomepageDisplayCount] = React.useState(8);
+  const [latestFeedCount, setLatestFeedCount] = React.useState(8);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,8 +145,11 @@ export default function HomeClient({
         <div className="container mx-auto px-6 md:px-8 max-w-7xl relative">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
             <div>
-              <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary mb-3 block">Curated Selection</span>
+              <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary mb-3 block">Conversion First Edits</span>
               <h3 className="font-serif text-3xl md:text-5xl text-text-light dark:text-text-dark font-bold tracking-tight">The Editor's Verdict</h3>
+              <p className="text-gray-400 text-[10px] uppercase font-bold tracking-widest mt-2 flex items-center gap-1.5 leading-none">
+                <Shield size={10} strokeWidth={3} /> Independent Testing — Honesty over Hype
+              </p>
             </div>
             <div className="hidden md:flex items-center gap-2">
               <Link href="/category/all" className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary hover:text-text-light dark:hover:text-white transition-colors flex items-center gap-2">
@@ -186,7 +192,7 @@ export default function HomeClient({
                         src={prod.feature_image}
                         alt={prod.title}
                         fill
-                        className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                        className="object-cover transition-transform duration-1000 md:group-hover:scale-110"
                         sizes="(max-width: 768px) 280px, 380px"
                       />
                     )}
@@ -281,13 +287,13 @@ export default function HomeClient({
                     <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
                     <div className="relative w-24 h-32 shrink-0 bg-stone-100 dark:bg-gray-800">
                        <div className="absolute inset-0 border border-primary/20 -m-2 z-0" />
-                       <div className="relative z-10 w-full h-full flex items-center justify-center text-primary/20 font-serif italic text-4xl select-none">E.H</div>
+                       <div className="relative z-10 w-full h-full flex items-center justify-center text-primary/20 font-serif italic text-4xl select-none">GGH</div>
                     </div>
                     <div>
                       <span className="text-[8px] font-bold uppercase tracking-[0.3em] text-primary mb-2 block">Editor's Highlight</span>
-                      <h5 className="font-serif text-lg text-text-light dark:text-white font-bold mb-2">Elena Haven</h5>
+                      <h5 className="font-serif text-lg text-text-light dark:text-white font-bold mb-2">Editorial Collective</h5>
                       <p className="text-[11px] text-gray-500 italic leading-relaxed mb-4">"Skincare is a marathon, not a sprint. We prioritize long-term skin health over instant results."</p>
-                      <span className="text-[8px] font-bold uppercase tracking-widest border-b border-primary/30 pb-0.5">Certified Aesthetician</span>
+                      <span className="text-[8px] font-bold uppercase tracking-widest border-b border-primary/30 pb-0.5">Beauty Insiders</span>
                     </div>
                   </div>
 
@@ -333,8 +339,8 @@ export default function HomeClient({
                     True beauty begins the moment you decide to be yourself and ritualize your self-care.
                   </p>
                   <div className="mt-8 flex items-center gap-4">
-                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-[10px] text-primary font-bold">EH</div>
-                     <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">Chief Editor, Elena</span>
+                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-[10px] text-primary font-bold">GGH</div>
+                     <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">The Editorial Board</span>
                   </div>
                 </div>
               </div>
@@ -353,7 +359,7 @@ export default function HomeClient({
                         src={post.feature_image}
                         alt={post.title}
                         fill
-                        className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                        className="object-cover transition-transform duration-1000 md:group-hover:scale-110"
                         sizes={idx === 0 ? "100vw" : "(max-width: 768px) 100vw, 50vw"}
                       />
                     )}
@@ -400,7 +406,7 @@ export default function HomeClient({
                     src={post.feature_image}
                     alt={post.title}
                     fill
-                    className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                    className="object-cover transition-transform duration-1000 md:group-hover:scale-110"
                     loading="lazy"
                     sizes="(max-width: 768px) 50vw, 25vw"
                   />
@@ -419,19 +425,84 @@ export default function HomeClient({
           {homepageDisplayCount < trendingPosts.length ? (
             <button 
               onClick={() => setHomepageDisplayCount(prev => Math.min(prev + 4, trendingPosts.length))}
-              className="px-12 py-4 border border-border-light dark:border-border-dark text-[10px] font-bold uppercase tracking-[0.4em] text-gray-400 hover:text-primary hover:border-primary transition-all rounded-sm"
+              className="px-12 py-4 border border-border-light dark:border-border-dark text-[10px] font-bold uppercase tracking-[0.4em] text-gray-400 dark:text-gray-300 hover:text-primary hover:border-primary transition-all rounded-sm"
             >
               View More Trends
             </button>
           ) : (
             <button
               disabled
-              className="px-12 py-4 border border-gray-200 dark:border-gray-800 text-[10px] font-bold uppercase tracking-[0.4em] text-gray-300 dark:text-gray-700 cursor-not-allowed rounded-sm"
+              className="px-12 py-4 border border-gray-200 dark:border-gray-800 text-[10px] font-bold uppercase tracking-[0.4em] text-gray-300 dark:text-gray-600 cursor-not-allowed rounded-sm"
             >
               No More Trends
             </button>
           )}
         </div>
+      </motion.section>
+
+      {/* --- NEW SECTION 4: MORE TO EXPLORE (Latest Posts for SEO) --- */}
+      <motion.section 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={revealVariants}
+        className="py-24 md:py-32 bg-stone-50 dark:bg-gray-900 border-t border-border-light dark:border-border-dark"
+      >
+         <div className="container mx-auto px-6 max-w-7xl">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-6">
+               <div>
+                  <span className="text-[9px] font-bold tracking-[0.3em] uppercase text-primary mb-3 block">Infinite Inspiration</span>
+                  <h3 className="font-serif text-5xl text-text-light dark:text-white font-bold">More to Explore</h3>
+               </div>
+               <p className="max-w-xs text-gray-500 text-xs italic leading-relaxed">
+                  Our latest discoveries, from Amazon hidden gems to Sephora sale deep dives.
+               </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+               {allPosts?.slice(0, latestFeedCount).map((post) => (
+                 <Link key={post.id} href={`/post/${post.slug}`} className="group flex flex-col">
+                    <div className="relative aspect-[16/10] bg-gray-200 dark:bg-gray-800 rounded-sm mb-6 overflow-hidden border border-border-light dark:border-border-dark">
+                       {post.feature_image && (
+                         <Image 
+                           src={post.feature_image} 
+                           alt={post.title} 
+                           fill 
+                           className="object-cover transition-transform duration-700 md:group-hover:scale-105"
+                           sizes="(max-width: 768px) 100vw, 25vw"
+                         />
+                       )}
+                       <div className="absolute inset-0 bg-stone-900/0 group-hover:bg-stone-900/10 transition-colors" />
+                    </div>
+                    <div className="flex items-center gap-3 mb-3">
+                       <span className="text-[8px] font-bold uppercase tracking-widest text-primary border border-primary/20 px-2 py-0.5">
+                          {post.primary_tag?.name || 'Latest'}
+                       </span>
+                       <span className="w-8 h-[1px] bg-gray-200" />
+                       <span className="text-[9px] text-gray-400 uppercase tracking-widest italic">New Post</span>
+                    </div>
+                    <h5 className="font-serif text-xl text-text-light dark:text-white font-bold group-hover:text-primary transition-colors leading-tight">
+                       {post.title}
+                    </h5>
+                    <p className="mt-3 text-gray-400 text-[11px] font-serif italic line-clamp-2 leading-relaxed">
+                       {post.custom_excerpt || post.excerpt}
+                    </p>
+                 </Link>
+               ))}
+            </div>
+
+            {latestFeedCount < (allPosts?.length || 0) && (
+              <div className="mt-20 text-center">
+                 <button 
+                  onClick={() => setLatestFeedCount(prev => prev + 4)}
+                  className="group relative inline-flex items-center gap-4 px-12 py-5 border border-primary/30 text-[10px] font-bold uppercase tracking-[0.4em] text-text-light dark:text-white hover:bg-primary hover:text-white transition-all overflow-hidden"
+                 >
+                    <span className="relative z-10">Expand Your Horizon</span>
+                    <Zap size={10} className="relative z-10 group-hover:scale-125 transition-transform" />
+                 </button>
+              </div>
+            )}
+         </div>
       </motion.section>
 
       {/* --- REFINED NEWSLETTER --- */}
@@ -467,7 +538,7 @@ export default function HomeClient({
                   <input 
                     type="email" 
                     placeholder="YOUR EMAIL" 
-                    className="flex-1 bg-white dark:bg-gray-800 px-6 py-4 text-[10px] font-bold tracking-[0.2em] uppercase focus:outline-none"
+                    className="flex-1 bg-white dark:bg-gray-800 px-6 py-4 text-[10px] font-bold tracking-[0.2em] uppercase focus:outline-none dark:text-white"
                     required
                   />
                   <button className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-8 py-4 text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-primary dark:hover:bg-primary hover:text-white transition-all whitespace-nowrap">
