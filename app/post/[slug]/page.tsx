@@ -82,6 +82,12 @@ export default async function PostPage({ params }: Props) {
   // 3. Force stable dimensions style to prevent layout shifts
   processedHtml = processedHtml.replace(/<img(?![^>]*style="[^"]*width)/g, '<img style="width:100%;height:auto;"');
 
+  // 4. CLEAN UP ALL RESIZING PATHS (CRITICAL FIX FOR 500 ERRORS)
+  // This removes srcset and forces src to use the original image path.
+  processedHtml = processedHtml
+    .replace(/srcset="[^"]*"/gi, "") // Xóa sạch srcset
+    .replace(/\/content\/images\/size\/w\d+\//g, "/content/images/"); // Biến /size/w900/ thành ảnh gốc
+
   // 3. Fix relative image URLs
   const siteBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://glamgirlshaven.com';
   processedHtml = processedHtml.replace(
