@@ -38,14 +38,11 @@
 /* ── Mobile Scroll Performance ─────────────────────────── */
 /* Tell the browser these images will be composited so it
    creates GPU layers upfront, preventing mid-scroll jank.  */
-/* Post body images — prevent layout shift by reserving space */
+/* Post body images */
 .gh-content img {
   width: 100%;
   height: auto;
   display: block;
-  background-color: #f5f0f0; /* placeholder color while loading */
-  content-visibility: auto;
-  contain-intrinsic-size: auto 400px;
 }
 
 /* Prevent iOS elastic-scroll from interfering with fixed
