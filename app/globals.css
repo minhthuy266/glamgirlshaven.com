@@ -35,6 +35,30 @@
   100% { opacity: 1; transform: translateY(0); }
 }
 
+/* ── Mobile Scroll Performance ─────────────────────────── */
+/* Tell the browser these images will be composited so it
+   creates GPU layers upfront, preventing mid-scroll jank.  */
+img {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Post body images — critical for mobile scroll perf.
+   Ghost serves full-res images; we contain their layout impact. */
+.gh-content img {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+
+/* Prevent iOS elastic-scroll from interfering with fixed
+   elements and compositing layers during scroll.           */
+@media (max-width: 767px) {
+  .overflow-hidden {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+
 @layer base {
   html {
     @apply transition-colors duration-300;

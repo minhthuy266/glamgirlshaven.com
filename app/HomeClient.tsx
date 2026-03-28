@@ -81,7 +81,7 @@ export default function HomeClient({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 1 }}
           >
-            <span className="inline-block py-1.5 px-5 border border-white/20 bg-white/5 backdrop-blur-md rounded-full text-[9px] font-bold tracking-[0.3em] uppercase mb-8 shadow-xl">
+            <span className="inline-block py-1.5 px-5 border border-white/20 bg-white/10 rounded-full text-[9px] font-bold tracking-[0.3em] uppercase mb-8 shadow-xl">
               Editorial Excellence
             </span>
             <h1 className="font-serif text-5xl md:text-8xl lg:text-9xl leading-[0.9] mb-8 drop-shadow-2xl font-bold tracking-tighter">
@@ -252,11 +252,11 @@ export default function HomeClient({
         <div className="absolute right-0 top-1/2 text-[10rem] md:text-[15rem] font-serif font-bold text-primary/5 select-none pointer-events-none hidden lg:block translate-x-1/2 rotate-90">
           EDITORIAL
         </div>
-        <div className="absolute left-0 bottom-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[140px] -translate-x-1/2 translate-y-1/2 pointer-events-none" />
+        <div className="hidden lg:block absolute left-0 bottom-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[80px] -translate-x-1/2 translate-y-1/2 pointer-events-none" />
 
         <div className="container mx-auto px-6 md:px-8 max-w-7xl relative">
           <div className="flex flex-col lg:flex-row gap-16 md:gap-24 items-start">
-            <div className="w-full lg:w-[40%] sticky top-32 flex gap-10">
+            <div className="w-full lg:w-[40%] lg:sticky lg:top-32 flex gap-10">
               {/* Vertical Rail with Branding */}
               <div className="hidden lg:flex flex-col items-center gap-6 py-4 border-r border-border-light dark:border-border-dark pr-8 shrink-0 h-full min-h-[1200px]">
                 <span className="rail-text">Est. {new Date().getFullYear() - 1}</span>
@@ -512,7 +512,7 @@ export default function HomeClient({
       <section className="bg-bg-light dark:bg-bg-dark py-12 border-t border-border-light dark:border-border-dark transition-colors duration-300">
         <div className="container mx-auto px-6 max-w-7xl">
           <div className="bg-stone-50 dark:bg-gray-900 px-8 py-10 md:px-16 md:py-12 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10 border border-border-light dark:border-border-dark">
-            <div className="absolute top-0 left-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 -translate-x-1/2 blur-2xl" />
+            <div className="hidden md:block absolute top-0 left-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 -translate-x-1/2 blur-2xl" />
             
             <div className="relative z-10 flex items-center gap-6 text-left max-w-2xl">
               <div className="w-16 h-16 shrink-0 bg-primary/10 rounded-full flex items-center justify-center text-primary">

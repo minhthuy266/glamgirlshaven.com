@@ -78,18 +78,28 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
       }
     }
 
-    // Normalize all image URLs within the post content
+    // Normalize and optimize image URLs within the post content
     const images = doc.querySelectorAll('img');
     images.forEach(img => {
       const src = img.getAttribute('src');
       if (src && !src.startsWith('http') && src.startsWith('/')) {
-        // If it's a Ghost image, it should point to glamoroushaven.com (or wherever the site is)
         if (src.startsWith('/content/images')) {
           img.setAttribute('src', `https://glamgirlshaven.com${src}`);
         } else {
           img.setAttribute('src', `${process.env.NEXT_PUBLIC_SITE_URL || 'https://glamgirlshaven.com'}${src}`);
         }
       }
+      // Add Ghost image resizing for mobile performance
+      // Ghost supports ?w=800 query param to serve smaller images
+      const finalSrc = img.getAttribute('src');
+      if (finalSrc && finalSrc.includes('/content/images/') && !finalSrc.includes('?')) {
+        img.setAttribute('src', `${finalSrc}?w=900`);
+      }
+      // Add loading lazy + async decoding so images don't block scroll
+      img.setAttribute('loading', 'lazy');
+      img.setAttribute('decoding', 'async');
+      // Tell GPU to composite this layer
+      img.style.transform = 'translateZ(0)';
     });
 
     // Mark Amazon links as sponsored/nofollow, and open in new tab.
@@ -144,8 +154,8 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
     <>
       {/* Reading progress bar */}
       <div
-        className="fixed top-0 left-0 h-[3px] bg-primary z-[100] transition-all duration-100"
-        style={{ width: `${readingProgress}%` }}
+        className="fixed top-0 left-0 h-[3px] bg-primary z-[100]"
+        style={{ width: `${readingProgress}%`, transition: 'width 0.1s linear' }}
       />
 
       <div className="bg-bg-light dark:bg-bg-dark min-h-screen pb-20 transition-colors duration-300">
@@ -351,7 +361,7 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
                           src={trendingPosts[0].feature_image} 
                           alt={trendingPosts[0].title}
                           fill
-                          className="object-cover transition-transform duration-1000 md:group-hover:scale-110"
+                          className="object-cover md:transition-transform md:duration-700 md:group-hover:scale-110"
                         />
                       )}
                     </div>
@@ -388,7 +398,7 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
                           sizes="208px"
                         />
                       ) : null}
-                      <div className="absolute top-0 left-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur px-2 py-1">
+                      <div className="absolute top-0 left-0 bg-white/95 dark:bg-gray-900/95 px-2 py-1">
                         <span className="text-[9px] font-bold tracking-widest text-text-light dark:text-text-dark">0{idx + 1}</span>
                       </div>
                     </div>
