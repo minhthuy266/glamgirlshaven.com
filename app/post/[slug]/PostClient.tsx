@@ -120,22 +120,41 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
     setToc(tocData);
   }, [post]);
 
+  // ── Reading progress bar (throttled via rAF) ──────────────────
   useEffect(() => {
+    let rafId: number;
     const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      setReadingProgress(totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0);
-      if (toc.length === 0) return;
-      const headerOffset = 150;
-      let currentId = '';
-      for (const item of toc) {
-        const element = document.getElementById(item.id);
-        if (element && element.getBoundingClientRect().top <= headerOffset) currentId = item.id;
-      }
-      setActiveId(currentId);
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+        setReadingProgress(totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0);
+      });
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  // ── TOC active heading (IntersectionObserver — runs off main thread) ──
+  useEffect(() => {
+    if (toc.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveId(entry.target.id);
+        });
+      },
+      { rootMargin: '-10% 0px -80% 0px', threshold: 0 }
+    );
+    toc.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
   }, [toc]);
+
 
   const scrollToHeading = (id: string, isMobile: boolean = false) => {
     if (isMobile) {
