@@ -219,6 +219,7 @@
     margin: 2.5rem 0;
     width: 100%;
     overflow: hidden;
+    contain: content; /* isolate paint/layout from rest of page */
   }
   .dark .gh-content .kg-product-card {
     background: var(--color-bg-dark);
