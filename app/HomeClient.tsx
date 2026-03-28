@@ -27,8 +27,8 @@ interface HomeClientProps {
 }
 
 const revealVariants: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
 };
 
 export default function HomeClient({
@@ -53,12 +53,7 @@ export default function HomeClient({
     <main className="bg-bg-light dark:bg-bg-dark overflow-x-hidden transition-colors duration-300">
       {/* --- HERO SECTION --- */}
       <section className="relative w-full h-[85vh] md:h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden">
-        <motion.div 
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-          className="absolute inset-0 z-0"
-        >
+        <div className="absolute inset-0 z-0">
           <Image
             src={heroBgImage}
             alt="Glamorous Beauty"
@@ -70,7 +65,7 @@ export default function HomeClient({
           <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-black/50 to-transparent z-10 pointer-events-none" />
           <div className="absolute inset-0 bg-gray-900/10 dark:bg-black/30" />
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900/70 via-transparent to-transparent" />
-        </motion.div>
+        </div>
 
         <div className="relative z-20 container mx-auto px-6 text-center text-white">
           <motion.div
@@ -192,7 +187,7 @@ export default function HomeClient({
                         src={prod.feature_image}
                         alt={prod.title}
                         fill
-                        className="object-cover transition-transform duration-1000 md:group-hover:scale-110"
+                        className="object-cover md:transition-transform md:duration-700 md:group-hover:scale-110"
                         sizes="(max-width: 768px) 280px, 380px"
                       />
                     )}
@@ -359,7 +354,7 @@ export default function HomeClient({
                         src={post.feature_image}
                         alt={post.title}
                         fill
-                        className="object-cover transition-transform duration-1000 md:group-hover:scale-110"
+                        className="object-cover md:transition-transform md:duration-700 md:group-hover:scale-110"
                         sizes={idx === 0 ? "100vw" : "(max-width: 768px) 100vw, 50vw"}
                       />
                     )}
@@ -406,7 +401,7 @@ export default function HomeClient({
                     src={post.feature_image}
                     alt={post.title}
                     fill
-                    className="object-cover transition-transform duration-1000 md:group-hover:scale-110"
+                    className="object-cover md:transition-transform md:duration-700 md:group-hover:scale-110"
                     loading="lazy"
                     sizes="(max-width: 768px) 50vw, 25vw"
                   />
@@ -468,7 +463,7 @@ export default function HomeClient({
                            src={post.feature_image} 
                            alt={post.title} 
                            fill 
-                           className="object-cover transition-transform duration-700 md:group-hover:scale-105"
+                           className="object-cover md:transition-transform md:duration-500 md:group-hover:scale-105"
                            sizes="(max-width: 768px) 100vw, 25vw"
                          />
                        )}

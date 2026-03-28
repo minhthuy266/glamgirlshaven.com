@@ -27,7 +27,7 @@ export default async function Category({ params }: CategoryProps) {
     <div className="bg-bg-light dark:bg-bg-dark min-h-screen">
       <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl py-20 relative overflow-hidden">
         {/* Chữ nền — clip trong vùng container max-w-7xl */}
-        <div className="absolute top-16 right-0 text-[10rem] md:text-[18rem] leading-none font-serif font-bold text-primary/5 select-none pointer-events-none hidden lg:block">
+        <div className="absolute top-16 right-0 text-[10rem] md:text-[18rem] leading-none font-serif font-bold text-primary/5 select-none pointer-events-none hidden lg:block whitespace-nowrap">
           {categoryName}
         </div>
 

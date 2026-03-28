@@ -80,7 +80,7 @@ export async function getPosts(): Promise<GhostPost[]> {
 
     if (!res.ok) {
       if (res.status !== 401 && res.status !== 403) {
-        console.error('Failed to fetch Ghost posts:', res.status);
+        console.warn('Failed to fetch Ghost posts:', res.status);
       }
       return [];
     }
@@ -109,7 +109,7 @@ export async function getPostsByTag(tagSlug: string): Promise<GhostPost[]> {
 
     if (!res.ok) {
       if (res.status !== 401 && res.status !== 403) {
-        console.error(`Failed to fetch Ghost posts for tag ${tagSlug}:`, res.status);
+        console.warn(`Failed to fetch Ghost posts for tag ${tagSlug}:`, res.status);
       }
       return [];
     }
@@ -142,7 +142,7 @@ export async function getPostBySlug(slug: string): Promise<GhostPost | null> {
     const post = Array.isArray(data.posts) ? data.posts[0] : null;
     return post ? mapPost(post) : null;
   } catch (error) {
-    console.error(`Error fetching Ghost post ${slug}:`, error);
+    console.warn(`Error fetching Ghost post ${slug}:`, error);
     return null;
   }
 }
