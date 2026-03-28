@@ -245,10 +245,14 @@
   
   .gh-content .kg-product-card-image {
     width: 100%;
+    height: auto;
     aspect-ratio: 1/1;
     object-fit: cover;
     border-radius: 1px;
     margin: 0 !important;
+    /* Fix flex layout jumping/dancing on scroll */
+    flex: 0 0 auto;
+    min-height: 0;
   }
   .dark .gh-content .kg-product-card-image {
     opacity: 0.9;
