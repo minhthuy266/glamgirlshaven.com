@@ -73,7 +73,7 @@ export default async function PostPage({ params }: Props) {
   // 1. Add lazy + async decode + GPU hint to all <img> tags
   processedHtml = processedHtml.replace(
     /<img(\s)/g,
-    '<img loading="lazy" decoding="async" style="transform:translateZ(0)"$1'
+    '<img loading="lazy" decoding="async"$1'
   );
 
   // 2. Resize Ghost-hosted images via Ghost's built-in resize API
