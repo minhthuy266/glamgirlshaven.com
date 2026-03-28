@@ -70,11 +70,8 @@ export default async function PostPage({ params }: Props) {
   // This prevents the client-side flash where all images load simultaneously.
   let processedHtml = post.html || '';
 
-  // 1. Add lazy + async decode + GPU hint to all <img> tags
-  processedHtml = processedHtml.replace(
-    /<img(\s)/g,
-    '<img loading="lazy" decoding="async"$1'
-  );
+  // Removed lazy-loading regex because Safari collapses off-screen lazy images 
+  // without explicit dimensions, causing severe continuous layout jumping.
 
   // 2. Resize Ghost-hosted images via Ghost's built-in resize API
   //    Ghost resize URL: /content/images/size/w900/year/month/file.jpg
