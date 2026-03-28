@@ -82,13 +82,6 @@ export default async function PostPage({ params }: Props) {
   // 3. Force stable dimensions style to prevent layout shifts
   processedHtml = processedHtml.replace(/<img(?![^>]*style="[^"]*width)/g, '<img style="width:100%;height:auto;"');
 
-  // 4. Resize Ghost-hosted images via Ghost's built-in resize API
-  //    Ghost resize URL: /content/images/size/w900/year/month/file.jpg
-  processedHtml = processedHtml.replace(
-    /(\/content\/images\/)(?!size\/)(\d{4}\/)/g,
-    '$1size/w900/$2'
-  );
-
   // 3. Fix relative image URLs
   const siteBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://glamgirlshaven.com';
   processedHtml = processedHtml.replace(
