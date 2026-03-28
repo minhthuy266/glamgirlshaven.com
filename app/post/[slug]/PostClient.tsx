@@ -13,10 +13,10 @@ interface TOCItem { id: string; text: string; level: number; }
 interface PostClientProps {
   post: GhostPost;
   trendingPosts: GhostPost[];
+  processedHtml: string;
 }
 
-export default function PostClient({ post, trendingPosts }: PostClientProps) {
-  const [processedHtml, setProcessedHtml] = useState<string>('');
+export default function PostClient({ post, trendingPosts, processedHtml }: PostClientProps) {
   const [toc, setToc] = useState<TOCItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
   const [isMobileTocOpen, setIsMobileTocOpen] = useState(false);
@@ -35,90 +35,19 @@ export default function PostClient({ post, trendingPosts }: PostClientProps) {
   const hasAffiliateTag = post.tags?.some((t) => affiliateTagSlugs.has(t.slug)) || false;
   const hasAffiliateLinks = hasAmazonLink || hasAffiliateTag;
 
+  // ── Extract TOC headings from the SERVER-rendered HTML ──
+  // HTML is already in the DOM from SSR, so we just query headings.
   useEffect(() => {
-    if (!post?.html) return;
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(post.html, 'text/html');
-
-    const headings = doc.querySelectorAll('h2, h3');
+    const headings = document.querySelectorAll('.gh-content h2, .gh-content h3');
     const tocData: TOCItem[] = [];
     headings.forEach((heading, index) => {
       const text = heading.textContent || '';
-      const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `section-${index}`;
-      heading.id = id;
+      const id = heading.id || text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `section-${index}`;
+      if (!heading.id) heading.id = id;
       tocData.push({ id, text, level: parseInt(heading.tagName.substring(1)) });
     });
-
-    // Group consecutive product cards into sliders
-    const productCards = Array.from(doc.querySelectorAll('.kg-product-card'));
-    if (productCards.length > 0) {
-      let i = 0;
-      while (i < productCards.length) {
-        const group: Element[] = [productCards[i]];
-        let j = i + 1;
-        while (j < productCards.length) {
-          const current = productCards[j - 1];
-          const next = productCards[j];
-          const sibling = current.nextElementSibling;
-          if (sibling === next) { group.push(next); j++; } else { break; }
-        }
-        if (group.length > 1) {
-          const wrapper = doc.createElement('div');
-          wrapper.className = 'gh-product-slider-wrapper';
-          const container = doc.createElement('div');
-          container.className = 'gh-product-slider-container';
-          wrapper.appendChild(container);
-          const firstCard = group[0];
-          if (firstCard.parentNode) {
-            firstCard.parentNode.insertBefore(wrapper, firstCard);
-            group.forEach((card) => container.appendChild(card));
-          }
-        }
-        i = j;
-      }
-    }
-
-    // Normalize and optimize image URLs within the post content
-    const images = doc.querySelectorAll('img');
-    images.forEach(img => {
-      const src = img.getAttribute('src');
-      if (src && !src.startsWith('http') && src.startsWith('/')) {
-        if (src.startsWith('/content/images')) {
-          img.setAttribute('src', `https://glamgirlshaven.com${src}`);
-        } else {
-          img.setAttribute('src', `${process.env.NEXT_PUBLIC_SITE_URL || 'https://glamgirlshaven.com'}${src}`);
-        }
-      }
-      // Add Ghost image resizing for mobile performance
-      // Ghost supports ?w=800 query param to serve smaller images
-      const finalSrc = img.getAttribute('src');
-      if (finalSrc && finalSrc.includes('/content/images/') && !finalSrc.includes('?')) {
-        img.setAttribute('src', `${finalSrc}?w=900`);
-      }
-      // Add loading lazy + async decoding so images don't block scroll
-      img.setAttribute('loading', 'lazy');
-      img.setAttribute('decoding', 'async');
-      // Tell GPU to composite this layer
-      img.style.transform = 'translateZ(0)';
-    });
-
-    // Mark Amazon links as sponsored/nofollow, and open in new tab.
-    const links = doc.querySelectorAll('a[href]');
-    links.forEach((a) => {
-      const href = a.getAttribute('href') || '';
-      if (/^https?:\/\/(?:www\.)?(?:amazon\.[a-z.]+|amzn\.to)\//i.test(href)) {
-        const existingRel = (a.getAttribute('rel') || '').split(/\s+/).filter(Boolean);
-        const rel = new Set(existingRel);
-        rel.add('nofollow');
-        rel.add('sponsored');
-        a.setAttribute('rel', Array.from(rel).join(' '));
-        if (!a.getAttribute('target')) a.setAttribute('target', '_blank');
-      }
-    });
-
-    setProcessedHtml(doc.body.innerHTML || '');
     setToc(tocData);
-  }, [post]);
+  }, []);
 
   // ── Reading progress bar (throttled via rAF) ──────────────────
   useEffect(() => {

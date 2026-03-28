@@ -66,6 +66,43 @@ export default async function PostPage({ params }: Props) {
 
   const trendingPosts = allPosts.filter((p) => p.slug !== slug).slice(0, 5);
 
+  // ── Process post HTML on the SERVER so images are in the initial render ──
+  // This prevents the client-side flash where all images load simultaneously.
+  let processedHtml = post.html || '';
+
+  // 1. Add lazy + async decode + GPU hint to all <img> tags
+  processedHtml = processedHtml.replace(
+    /<img(\s)/g,
+    '<img loading="lazy" decoding="async" style="transform:translateZ(0)"$1'
+  );
+
+  // 2. Resize Ghost-hosted images via Ghost's built-in resize API
+  //    Ghost resize URL: /content/images/size/w900/year/month/file.jpg
+  processedHtml = processedHtml.replace(
+    /(\/content\/images\/)(?!size\/)(\d{4}\/)/g,
+    '$1size/w900/$2'
+  );
+
+  // 3. Fix relative image URLs
+  const siteBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://glamgirlshaven.com';
+  processedHtml = processedHtml.replace(
+    /src="(\/content\/images\/)/g,
+    `src="${siteBase}$1`
+  );
+
+  // 4. Open Amazon links in new tab with nofollow
+  processedHtml = processedHtml.replace(
+    /<a(\s[^>]*?)href="(https?:\/\/(?:www\.)?(?:amazon\.[a-z.]+|amzn\.to)\/[^"]*?)"([^>]*?)>/g,
+    (match, before, href, after) => {
+      const hasTarget = /target=/i.test(before + after);
+      const hasRel = /rel=/i.test(before + after);
+      let tag = `<a${before}href="${href}"${after}`;
+      if (!hasTarget) tag += ' target="_blank"';
+      if (!hasRel) tag += ' rel="nofollow sponsored"';
+      return tag + '>';
+    }
+  );
+
   // JSON-LD Schema
   const siteUrl = 'https://glamgirlshaven.com';
   const breadcrumbSchema = {
@@ -125,7 +162,7 @@ export default async function PostPage({ params }: Props) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
       )}
       {/* We only need trendingPosts, but adding related if needed later */}
-      <PostClient post={post} trendingPosts={trendingPosts} />
+      <PostClient post={post} trendingPosts={trendingPosts} processedHtml={processedHtml} />
     </>
   );
 }
