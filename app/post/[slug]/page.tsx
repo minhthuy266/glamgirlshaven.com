@@ -109,6 +109,17 @@ export default async function PostPage({ params }: Props) {
     }
   );
 
+  // ── SERVER-SIDE TOC EXTRACTION ──
+  const toc: { id: string; text: string; level: number }[] = [];
+  const headerRegex = /<h(2|3)[^>]*>(.*?)<\/h\1>/gi;
+  let match;
+  let headerIndex = 0;
+  while ((match = headerRegex.exec(processedHtml)) !== null) {
+    const text = match[2].replace(/<\/?[^>]+(>|$)/g, "");
+    const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `section-${headerIndex++}`;
+    toc.push({ level: parseInt(match[1]), id, text });
+  }
+
   // JSON-LD Schema
   const siteUrl = 'https://glamgirlshaven.com';
   const breadcrumbSchema = {
@@ -168,7 +179,7 @@ export default async function PostPage({ params }: Props) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
       )}
       {/* We only need trendingPosts, but adding related if needed later */}
-      <PostClient post={post} trendingPosts={trendingPosts} processedHtml={processedHtml} />
+      <PostClient post={post} trendingPosts={trendingPosts} processedHtml={processedHtml} tocData={toc} />
     </>
   );
 }
