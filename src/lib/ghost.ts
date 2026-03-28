@@ -45,15 +45,17 @@ const normalizeUrl = (url?: string) => {
   if (!url) return null;
   if (url.startsWith('http')) return url;
   
+  const publicApiUrl = process.env.NEXT_PUBLIC_GHOST_API_URL || 'https://api.glamgirlshaven.com';
+
   // Ghost relative paths
   if (url.startsWith('/content/images') || url.startsWith('content/images')) {
     const cleanPath = url.startsWith('/') ? url : `/${url}`;
-    return `${GHOST_API_URL}${cleanPath}`;
+    return `${publicApiUrl}${cleanPath}`;
   }
   
   // Any other relative path starting with /
   if (url.startsWith('/')) {
-    return `${GHOST_API_URL}${url}`;
+    return `${publicApiUrl}${url}`;
   }
   
   return url;

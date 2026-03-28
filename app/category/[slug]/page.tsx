@@ -11,19 +11,13 @@ interface CategoryProps {
 }
 
 export async function generateStaticParams() {
-  const MENU_SLUGS = [
-    'all',
-    'skincare',
-    'make-up',
-    'haircare',
-    'wellness-self-love',
-    'fragrance-body',
-    'nails-beauty-tools',
-    'beauty-tips-hacks',
-    'gift-guides',
-  ];
-  return MENU_SLUGS.map((slug) => ({ slug }));
+  // Return empty array to completely bypass Ghost API during Docker build.
+  // This prevents ETIMEDOUT errors on VPS servers without Hairpin NAT
+  // Categories will be built On-Demand (ISR) on the first visit.
+  return [];
 }
+
+export const dynamicParams = true;
 
 export default async function Category({ params }: CategoryProps) {
   const { slug } = await params;
