@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === 'production' && !process.env.GHOST_API_URL) {
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://glamgirlshaven.com';
 
 
-async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout = 8000) {
+async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout = 30000) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
   try {

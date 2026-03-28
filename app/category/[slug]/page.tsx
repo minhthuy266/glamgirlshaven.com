@@ -10,6 +10,21 @@ interface CategoryProps {
   }>;
 }
 
+export async function generateStaticParams() {
+  const MENU_SLUGS = [
+    'all',
+    'skincare',
+    'make-up',
+    'haircare',
+    'wellness-self-love',
+    'fragrance-body',
+    'nails-beauty-tools',
+    'beauty-tips-hacks',
+    'gift-guides',
+  ];
+  return MENU_SLUGS.map((slug) => ({ slug }));
+}
+
 export default async function Category({ params }: CategoryProps) {
   const { slug } = await params;
   
