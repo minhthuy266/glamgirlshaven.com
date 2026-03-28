@@ -14,10 +14,11 @@ interface PostClientProps {
   post: GhostPost;
   trendingPosts: GhostPost[];
   processedHtml: string;
+  tocData: TOCItem[];
 }
 
-export default function PostClient({ post, trendingPosts, processedHtml }: PostClientProps) {
-  const [toc, setToc] = useState<TOCItem[]>([]);
+export default function PostClient({ post, trendingPosts, processedHtml, tocData }: PostClientProps) {
+  const [toc, setToc] = useState<TOCItem[]>(tocData || []);
   const [activeId, setActiveId] = useState<string>('');
   const [isMobileTocOpen, setIsMobileTocOpen] = useState(false);
   const [readingProgress, setReadingProgress] = useState(0);
@@ -296,6 +297,7 @@ export default function PostClient({ post, trendingPosts, processedHtml }: PostC
               <div
                 className="gh-content max-w-none prose prose-stone dark:prose-invert prose-base md:prose-lg mx-auto prose-headings:font-serif prose-headings:font-normal prose-img:rounded-sm prose-img:w-full"
                 dangerouslySetInnerHTML={{ __html: processedHtml }}
+                suppressHydrationWarning={true}
               />
 
               {/* Up Next / Footer CTA */}

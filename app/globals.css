@@ -35,12 +35,14 @@
   100% { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Mobile Scroll Performance ─────────────────────────── */
-/* Tell the browser these images will be composited so it
-   creates GPU layers upfront, preventing mid-scroll jank.  */
-/* Post body images */
+/* Post body images — optimize for zero-flicker scroll per instructions */
 .gh-content img {
-  width: 100%;
+  transform: translateZ(0);        /* force GPU layer */
+  -webkit-transform: translateZ(0);
+  will-change: auto;               /* chỉ hint khi cần */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  /* Ngăn layout shift */
   height: auto;
   display: block;
 }
@@ -210,13 +212,12 @@
   
   /* --- PRODUCT CARD STYLES --- */
   .gh-content .kg-product-card {
-    background: var(--color-bg-light);
+    background: #ffffff !important;
     border: 1px solid var(--color-border-light);
     border-radius: 2px;
     margin: 2.5rem 0;
     width: 100%;
     overflow: hidden;
-    contain: content; /* isolate paint/layout from rest of page */
   }
   .dark .gh-content .kg-product-card {
     background: var(--color-bg-dark);
@@ -247,15 +248,18 @@
     width: 100%;
     height: auto;
     aspect-ratio: 1/1;
-    object-fit: cover;
+    object-fit: contain;
+    background: #ffffff !important;
     border-radius: 1px;
     margin: 0 !important;
-    /* Fix flex layout jumping/dancing on scroll */
     flex: 0 0 auto;
-    min-height: 0;
+    display: block;
+    min-width: 100%;
+    transition: none !important;
+    animation: none !important;
   }
   .dark .gh-content .kg-product-card-image {
-    opacity: 0.9;
+    opacity: 1;
   }
   
   @media (min-width: 768px) {

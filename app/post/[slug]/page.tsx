@@ -73,7 +73,16 @@ export default async function PostPage({ params }: Props) {
   // Removed lazy-loading regex because Safari collapses off-screen lazy images 
   // without explicit dimensions, causing severe continuous layout jumping.
 
-  // 2. Resize Ghost-hosted images via Ghost's built-in resize API
+  // 1. Change lazy to eager to prevent flickering/unloading on scroll
+  processedHtml = processedHtml.replace(/loading="lazy"/gi, 'loading="eager"');
+
+  // 2. Add decoding="async" to images that don't have it
+  processedHtml = processedHtml.replace(/<img(?![^>]*decoding)/g, '<img decoding="async"');
+
+  // 3. Force stable dimensions style to prevent layout shifts
+  processedHtml = processedHtml.replace(/<img(?![^>]*style="[^"]*width)/g, '<img style="width:100%;height:auto;"');
+
+  // 4. Resize Ghost-hosted images via Ghost's built-in resize API
   //    Ghost resize URL: /content/images/size/w900/year/month/file.jpg
   processedHtml = processedHtml.replace(
     /(\/content\/images\/)(?!size\/)(\d{4}\/)/g,
