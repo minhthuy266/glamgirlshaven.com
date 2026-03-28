@@ -17,11 +17,18 @@ interface PostClientProps {
   tocData: TOCItem[];
 }
 
-export default function PostClient({ post, trendingPosts, processedHtml, tocData }: PostClientProps) {
+export default function PostClient({ post, trendingPosts, processedHtml: initialHtml, tocData }: PostClientProps) {
+  const [processedHtml, setProcessedHtml] = useState<string>(initialHtml);
   const [toc, setToc] = useState<TOCItem[]>(tocData || []);
   const [activeId, setActiveId] = useState<string>('');
   const [isMobileTocOpen, setIsMobileTocOpen] = useState(false);
   const [readingProgress, setReadingProgress] = useState(0);
+
+  // Sync state with props
+  useEffect(() => {
+    setProcessedHtml(initialHtml);
+    setToc(tocData);
+  }, [initialHtml, tocData]);
 
   // Detect affiliate content to show disclosure
   const affiliateTagSlugs = new Set([
