@@ -42,6 +42,14 @@ export default function HomeClient({
   const [isSubscribed, setIsSubscribed] = React.useState(false);
   const [homepageDisplayCount, setHomepageDisplayCount] = React.useState(8);
   const [latestFeedCount, setLatestFeedCount] = React.useState(8);
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,9 +139,9 @@ export default function HomeClient({
 
       {/* --- SECTION 1: BEAUTY EDIT (Rating Cards) --- */}
       <motion.section 
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
+        initial={isMobile ? "visible" : "hidden"}
+        whileInView={isMobile ? undefined : "visible"}
+        viewport={{ once: true, margin: "-50px" }}
         variants={revealVariants}
         className="bg-white dark:bg-bg-dark py-20 md:py-28 border-b border-border-light dark:border-border-dark overflow-hidden transition-colors duration-300"
       >
@@ -231,9 +239,9 @@ export default function HomeClient({
 
       {/* --- SECTION 2: SKINCARE HACKS --- */}
       <motion.section 
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
+        initial={isMobile ? "visible" : "hidden"}
+        whileInView={isMobile ? undefined : "visible"}
+        viewport={{ once: true, margin: "-50px" }}
         variants={revealVariants}
         className="py-24 md:py-32 bg-bg-light dark:bg-bg-dark transition-colors duration-300 relative overflow-hidden"
       >
@@ -381,8 +389,8 @@ export default function HomeClient({
 
       {/* --- SECTION 3: TRENDING (The Gallery) --- */}
       <motion.section 
-        initial="hidden"
-        whileInView="visible"
+        initial={isMobile ? "visible" : "hidden"}
+        whileInView={isMobile ? undefined : "visible"}
         viewport={{ once: true }}
         variants={revealVariants}
         className="container mx-auto px-6 md:px-8 max-w-7xl py-24 md:py-32 border-t border-border-light dark:border-border-dark"
@@ -437,9 +445,9 @@ export default function HomeClient({
 
       {/* --- NEW SECTION 4: MORE TO EXPLORE (Latest Posts for SEO) --- */}
       <motion.section 
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
+        initial={isMobile ? "visible" : "hidden"}
+        whileInView={isMobile ? undefined : "visible"}
+        viewport={{ once: true, margin: "-50px" }}
         variants={revealVariants}
         className="py-24 md:py-32 bg-stone-50 dark:bg-gray-900 border-t border-border-light dark:border-border-dark"
       >

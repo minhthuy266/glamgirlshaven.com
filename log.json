@@ -1,0 +1,15 @@
+{
+  "errors": [
+    {
+      "message": "The server has encountered an error.",
+      "context": null,
+      "type": "InternalServerError",
+      "details": null,
+      "property": null,
+      "help": null,
+      "code": "EAI_AGAIN",
+      "id": "27624cc0-2795-11f1-80c5-09d056f123d3",
+      "ghostErrorCode": null
+    }
+  ]
+}
