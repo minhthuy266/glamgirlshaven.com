@@ -107,16 +107,46 @@ export default async function PostPage({ params }: Props) {
     }
   );
 
-  // ── SERVER-SIDE TOC EXTRACTION ──
+  // ── SERVER-SIDE HTML MODIFICATION (Add unique IDs to headings + extract TOC) ──
   const toc: { id: string; text: string; level: number }[] = [];
-  const headerRegex = /<h(2|3)[^>]*>(.*?)<\/h\1>/gi;
-  let match;
-  let headerIndex = 0;
-  while ((match = headerRegex.exec(processedHtml)) !== null) {
-    const text = match[2].replace(/<\/?[^>]+(>|$)/g, "");
-    const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `section-${headerIndex++}`;
-    toc.push({ level: parseInt(match[1]), id, text });
-  }
+  const idCounts = new Map<string, number>();
+
+  processedHtml = processedHtml.replace(/<h(2|3)([^>]*)>(.*?)<\/h\1>/gi, (match, level, attrs, content) => {
+    // Extract raw text and decode basic HTML entities
+    const text = content
+      .replace(/<\/?[^>]+(>|$)/g, "")
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'");
+
+    // Generate base slug
+    const baseId = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `section-${toc.length}`;
+
+    // Ensure uniqueness
+    let id = baseId;
+    if (idCounts.has(id)) {
+      const count = idCounts.get(id)! + 1;
+      idCounts.set(id, count);
+      id = `${id}-${count}`;
+    } else {
+      idCounts.set(id, 1);
+    }
+
+    toc.push({ level: parseInt(level), id, text });
+
+    // Inject unique ID back into HTML
+    let newAttrs = attrs;
+    if (/id="/i.test(newAttrs)) {
+      newAttrs = newAttrs.replace(/id="[^"]*"/i, `id="${id}"`);
+    } else {
+      newAttrs = ` id="${id}"${newAttrs}`;
+    }
+
+    return `<h${level}${newAttrs}>${content}</h${level}>`;
+  });
 
   // JSON-LD Schema
   const siteUrl = 'https://glamgirlshaven.com';

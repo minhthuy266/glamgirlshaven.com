@@ -43,56 +43,54 @@ export default function PostClient({ post, trendingPosts, processedHtml: initial
   const hasAffiliateTag = post.tags?.some((t) => affiliateTagSlugs.has(t.slug)) || false;
   const hasAffiliateLinks = hasAmazonLink || hasAffiliateTag;
 
-  // ── Extract TOC headings from the SERVER-rendered HTML ──
-  // HTML is already in the DOM from SSR, so we just query headings.
-  useEffect(() => {
-    const headings = document.querySelectorAll('.gh-content h2, .gh-content h3');
-    const tocData: TOCItem[] = [];
-    headings.forEach((heading, index) => {
-      const text = heading.textContent || '';
-      const id = heading.id || text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `section-${index}`;
-      if (!heading.id) heading.id = id;
-      tocData.push({ id, text, level: parseInt(heading.tagName.substring(1)) });
-    });
-    setToc(tocData);
-  }, []);
 
-  // ── Reading progress bar (throttled via rAF) ──────────────────
+
+  // ── Reading progress bar & TOC active state (throttled via rAF) ──────────────────
   useEffect(() => {
     let rafId: number;
     const handleScroll = () => {
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
+        // 1. Reading progress
         const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
         setReadingProgress(totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0);
+
+        // 2. TOC tracking (fallback to manual top calculation for reliability)
+        const headings = Array.from(document.querySelectorAll('.gh-content h2, .gh-content h3'));
+        if (headings.length > 0) {
+          let currentActiveId = '';
+          // 150px offset from top of viewport to consider it "active"
+          const offset = 150; 
+          
+          for (let i = 0; i < headings.length; i++) {
+            const heading = headings[i];
+            const bounds = heading.getBoundingClientRect();
+            // If the element's top is scrolled past our offset line
+            if (bounds.top < offset) {
+              currentActiveId = heading.id;
+            } else {
+              break; // Stop at the first heading that is below the line
+            }
+          }
+          
+          if (currentActiveId && currentActiveId !== activeId) {
+            setActiveId(currentActiveId);
+          }
+        }
       });
     };
+    
+    // Setup and trigger once on load
     window.addEventListener('scroll', handleScroll, { passive: true });
+    // Slight delay to ensure DOM parsing is fully done
+    setTimeout(handleScroll, 100);
+    
     return () => {
       window.removeEventListener('scroll', handleScroll);
       cancelAnimationFrame(rafId);
     };
-  }, []);
+  }, [activeId]);
 
-  // ── TOC active heading (IntersectionObserver — runs off main thread) ──
-  useEffect(() => {
-    if (toc.length === 0) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: '-100px 0px -50% 0px', threshold: 0 }
-    );
-    toc.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
-  }, [toc]);
 
 
   const scrollToHeading = (id: string, isMobile: boolean = false) => {
@@ -107,6 +105,16 @@ export default function PostClient({ post, trendingPosts, processedHtml: initial
       if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); setActiveId(id); }
     }
   };
+
+  // Sync TOC scroll position so active item is always visible
+  useEffect(() => {
+    if (activeId) {
+      const activeTocElement = document.getElementById(`toc-link-${activeId}`);
+      if (activeTocElement) {
+        activeTocElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  }, [activeId]);
 
   return (
     <>
@@ -178,13 +186,14 @@ export default function PostClient({ post, trendingPosts, processedHtml: initial
             {/* Left Sidebar — TOC */}
             <aside className="hidden lg:block lg:col-span-2 sticky top-32 order-1">
               {toc.length > 0 && (
-                <div>
+                <div className="max-h-[calc(100vh-10rem)] overflow-y-auto w-full pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                   <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-6 block">Contents</span>
                   <nav className="border-l border-border-light dark:border-border-dark">
                     <ul className="space-y-0">
                       {toc.map((item) => (
                         <li key={item.id} className="relative">
                           <a
+                            id={`toc-link-${item.id}`}
                             href={`#${item.id}`}
                             className={`block py-2 pl-4 text-xs leading-relaxed transition-all duration-300 border-l-2 -ml-[1px] ${item.level === 3 ? 'pl-8 text-[11px]' : ''} ${activeId === item.id ? 'border-primary text-primary font-bold' : 'border-transparent text-gray-400 hover:text-text-light dark:hover:text-text-dark hover:border-gray-300'}`}
                             onClick={(e) => { e.preventDefault(); scrollToHeading(item.id, false); }}
