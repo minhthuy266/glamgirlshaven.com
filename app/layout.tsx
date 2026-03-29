@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import type { Viewport } from 'next';
 import { Manrope, Tenor_Sans } from 'next/font/google';
 import { Header } from '@/src/components/layout/Header';
 import { Footer } from '@/src/components/layout/Footer';
@@ -20,9 +21,20 @@ const tenorSans = Tenor_Sans({
   display: 'swap',
 });
 
+export const viewport: Viewport = {
+  themeColor: '#0d0d0d',
+};
+
 export const metadata: Metadata = {
   title: 'GlamGirls Haven',
   description: 'Your ultimate destination for beauty, skincare, and wellness.',
+  icons: {
+    icon: [
+      { url: '/icon.png', type: 'image/png', sizes: '512x512' },
+    ],
+    apple: '/icon.png',
+    shortcut: '/icon.png',
+  },
 };
 
 export default function RootLayout({
