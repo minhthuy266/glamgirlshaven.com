@@ -27,8 +27,8 @@ interface HomeClientProps {
 }
 
 const revealVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } }
 };
 
 export default function HomeClient({
@@ -42,7 +42,7 @@ export default function HomeClient({
   const [isSubscribed, setIsSubscribed] = React.useState(false);
   const [homepageDisplayCount, setHomepageDisplayCount] = React.useState(8);
   const [latestFeedCount, setLatestFeedCount] = React.useState(8);
-  const [isMobile, setIsMobile] = React.useState(false);
+  const [isMobile, setIsMobile] = React.useState(true); // Default to true for better SSR on mobile
 
   React.useEffect(() => {
     setIsMobile(window.innerWidth < 768);
@@ -197,6 +197,7 @@ export default function HomeClient({
                         fill
                         className="object-cover md:transition-transform md:duration-700 md:group-hover:scale-110"
                         sizes="(max-width: 768px) 280px, 380px"
+                        priority={idx < 2}
                       />
                     )}
                   </Link>

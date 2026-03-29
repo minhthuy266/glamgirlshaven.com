@@ -9,7 +9,7 @@ import './globals.css';
 
 const manrope = Manrope({
   subsets: ['latin'],
-  weight: ['200', '300', '400', '500', '600', '700', '800'],
+  weight: ['300', '400', '500', '700'],
   variable: '--font-manrope',
   display: 'swap',
 });
@@ -44,6 +44,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${manrope.variable} ${tenorSans.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://images.unsplash.com" />
+        <link rel="preconnect" href="https://api.glamgirlshaven.com" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        <link rel="dns-prefetch" href="https://api.glamgirlshaven.com" />
+      </head>
       <body className="font-sans antialiased transition-colors duration-300">
         <ThemeProvider
           attribute="class"

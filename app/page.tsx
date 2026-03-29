@@ -50,14 +50,26 @@ export default async function HomePage() {
   // Use real Verdict-tagged Ghost posts ONLY
   const verdictProducts: GhostPost[] = verdictPosts.slice(0, 4);
 
+  const slim = (posts: GhostPost[]) =>
+    posts.map(({ id, title, slug, tags, primary_tag, feature_image, excerpt, custom_excerpt }) => ({
+      id,
+      title,
+      slug,
+      tags,
+      primary_tag,
+      feature_image,
+      excerpt,
+      custom_excerpt,
+    })) as GhostPost[];
+
   return (
     <HomeClient
-      hotPost={hotPost}
-      masterclassPosts={finalAcademyPosts}
-      trendingPosts={finalTrendingPosts}
-      verdictProducts={verdictProducts}
+      hotPost={hotPost ? slim([hotPost])[0] : undefined}
+      masterclassPosts={slim(finalAcademyPosts)}
+      trendingPosts={slim(finalTrendingPosts)}
+      verdictProducts={slim(verdictProducts)}
       heroBgImage={heroBgImage}
-      allPosts={posts}
+      allPosts={slim(posts)}
     />
   );
 }
