@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { parse } from 'node-html-parser';
 import { getPostBySlug, getPosts } from '@/src/lib/ghost';
 import PostClient from './PostClient';
 
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const siteUrl = 'https://glamgirlshaven.com';
   const url = `${siteUrl}/post/${post.slug}`;
-  const image = post.feature_image || 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?q=80&w=1200&auto=format&fit=crop';
+  const image = post.feature_image || 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?q=90&w=2600&auto=format&fit=crop';
   const description = post.custom_excerpt || post.excerpt || '';
   const title = post.title || 'GlamGirls Haven Article';
 
@@ -147,6 +148,18 @@ export default async function PostPage({ params }: Props) {
 
     return `<h${level}${newAttrs}>${content}</h${level}>`;
   });
+
+  // 5. Fix Hydration Mismatch using node-html-parser
+  const root = parse(processedHtml);
+  const pTags = root.querySelectorAll('p');
+  pTags.forEach(p => {
+    // If the p tag contains any block-level elements, it will break hydration. Change it to a div.
+    if (p.querySelector('div, figure, ul, ol, li, h1, h2, h3, h4, h5, h6, blockquote, pre, table')) {
+      p.tagName = 'div';
+      p.setAttribute('class', 'ghost-p-wrapper text-text-light dark:text-gray-300 text-[17px] md:text-[19px] leading-[1.8] mb-8');
+    }
+  });
+  processedHtml = root.toString();
 
   // JSON-LD Schema
   const siteUrl = 'https://glamgirlshaven.com';

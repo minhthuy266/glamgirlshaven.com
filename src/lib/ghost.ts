@@ -39,7 +39,7 @@ async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout 
   }
 }
 
-const DEFAULT_COVER = 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?q=80&w=1200&auto=format&fit=crop';
+const DEFAULT_COVER = 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?q=90&w=2600&auto=format&fit=crop';
 
 const normalizeUrl = (url?: string) => {
   if (!url) return null;
@@ -78,7 +78,7 @@ export async function getPosts(): Promise<GhostPost[]> {
 
   const url = `${GHOST_API_URL}/ghost/api/content/posts/?${BASE_PARAMS}&filter=status:published`;
   try {
-    const res = await fetchWithTimeout(url, { next: { revalidate: 300 } });
+    const res = await fetchWithTimeout(url, { next: { revalidate: process.env.NODE_ENV === 'development' ? 0 : 300 } });
 
     if (!res.ok) {
       if (res.status !== 401 && res.status !== 403) {
@@ -107,7 +107,7 @@ export async function getPostsByTag(tagSlug: string): Promise<GhostPost[]> {
   // Important: Join filters with '+' (url-encoded as %2B) into a single 'filter' parameter
   const url = `${GHOST_API_URL}/ghost/api/content/posts/?${BASE_PARAMS}&filter=status:published%2Btag:${tagSlug}`;
   try {
-    const res = await fetchWithTimeout(url, { next: { revalidate: 300 } });
+    const res = await fetchWithTimeout(url, { next: { revalidate: process.env.NODE_ENV === 'development' ? 0 : 300 } });
 
     if (!res.ok) {
       if (res.status !== 401 && res.status !== 403) {
@@ -131,7 +131,7 @@ export async function getPostBySlug(slug: string): Promise<GhostPost | null> {
   const url = `${GHOST_API_URL}/ghost/api/content/posts/slug/${slug}/?${BASE_PARAMS}`;
 
   try {
-    const res = await fetchWithTimeout(url, { next: { revalidate: 300 } });
+    const res = await fetchWithTimeout(url, { next: { revalidate: process.env.NODE_ENV === 'development' ? 0 : 300 } });
 
     if (!res.ok) {
       if (res.status !== 401 && res.status !== 403) {

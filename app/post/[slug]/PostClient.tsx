@@ -226,23 +226,39 @@ export default function PostClient({ post, trendingPosts, processedHtml: initial
                 </div>
               </div>
 
-              {/* Expert Scorecard (Only shown for product posts) */}
-              {post.tags?.some(t => t.slug === 'amazon-finds' || t.slug === 'editor-choice') && (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  className="bg-stone-50 dark:bg-gray-800/80 border-2 border-primary/20 p-8 md:p-12 mb-16 relative overflow-hidden group"
-                >
-                  <div className="absolute top-0 right-0 bg-primary text-white px-6 py-2 text-[10px] font-bold uppercase tracking-[0.3em] font-sans">
-                    Editor's Verdict
-                  </div>
-                  
-                  <div className="flex flex-col md:flex-row gap-12 items-center md:items-start">
-                    <div className="flex flex-col items-center">
-                      <div className="w-32 h-32 rounded-full border-4 border-primary/10 flex items-center justify-center relative">
-                        <span className="text-4xl md:text-5xl font-serif font-bold text-primary">9.8</span>
-                        <div className="absolute -bottom-2 bg-primary text-white text-[8px] font-bold px-3 py-1 uppercase tracking-widest">Score</div>
+                  {/* Expert Scorecard (Only shown for product posts) */}
+              {post.tags?.some(t => t.slug === 'amazon-finds' || t.slug === 'editor-choice') && (() => {
+                // Extract dynamic score from tags
+                const scoreTag = post.tags?.find(t => 
+                  t.name.toLowerCase().startsWith('#score:') || 
+                  t.slug.startsWith('hash-score-') ||
+                  t.slug.startsWith('score-')
+                );
+                let scoreValue = '9.8';
+                if (scoreTag) {
+                  if (scoreTag.slug.includes('score-')) {
+                    scoreValue = scoreTag.slug.replace('hash-score-', '').replace('score-', '').replace('-', '.');
+                  } else {
+                    scoreValue = scoreTag.name.split(':')[1] || '9.8';
+                  }
+                }
+
+                return (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    className="bg-stone-50 dark:bg-gray-800/80 border-2 border-primary/20 p-8 md:p-12 mb-16 relative overflow-hidden group"
+                  >
+                    <div className="absolute top-0 right-0 bg-primary text-white px-6 py-2 text-[10px] font-bold uppercase tracking-[0.3em] font-sans">
+                      Editor's Verdict
+                    </div>
+                    
+                    <div className="flex flex-col md:flex-row gap-12 items-center md:items-start">
+                      <div className="flex flex-col items-center">
+                        <div className="w-32 h-32 rounded-full border-4 border-primary/10 flex items-center justify-center relative">
+                          <span className="text-4xl md:text-5xl font-serif font-bold text-primary">{scoreValue}</span>
+                          <div className="absolute -bottom-2 bg-primary text-white text-[8px] font-bold px-3 py-1 uppercase tracking-widest">Score</div>
                       </div>
                       <div className="flex gap-1 text-primary mt-6">
                         {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={14} fill="currentColor" />)}
@@ -277,7 +293,8 @@ export default function PostClient({ post, trendingPosts, processedHtml: initial
                     </div>
                   </div>
                 </motion.div>
-              )}
+              );
+            })()}
 
               {/* Mobile TOC */}
               {toc.length > 0 && (
@@ -352,7 +369,7 @@ export default function PostClient({ post, trendingPosts, processedHtml: initial
             {/* Right Sidebar — Trending */}
             <aside className="hidden lg:block lg:col-span-2 sticky top-32 order-3">
               <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-6 block">Trending</span>
-              <div className="space-y-8">
+              <div className="max-h-[calc(100vh-10rem)] overflow-y-auto w-full pb-4 space-y-8 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                 {trendingPosts.map((trend, idx) => (
                   <Link href={`/post/${trend.slug}`} key={trend.id} className="group block">
                     <div className="relative aspect-[4/3] bg-gray-100 dark:bg-gray-800 overflow-hidden mb-3 rounded-sm shadow-sm border border-border-light dark:border-border-dark">
