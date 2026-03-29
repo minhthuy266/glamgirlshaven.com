@@ -215,7 +215,7 @@
     background: #ffffff !important;
     border: 1px solid var(--color-border-light);
     border-radius: 2px;
-    margin: 2.5rem 0;
+    margin: 3.5rem 0;
     width: 100%;
     overflow: hidden;
   }
@@ -228,103 +228,107 @@
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
-    gap: 1rem;
-    min-height: 480px;
+    gap: 1.25rem;
+    min-height: auto;
   }
   
   @media (min-width: 768px) {
     .gh-content .kg-product-card-container {
       display: grid;
-      grid-template-columns: 280px 1fr;
+      grid-template-columns: 220px 1fr;
       grid-template-rows: auto auto 1fr auto;
       column-gap: 2.5rem;
       row-gap: 0.5rem;
-      padding: 2.5rem;
-      min-height: 340px;
+      padding: 0; /* Let segments handle padding if needed, or use grid gaps */
     }
   }
   
   .gh-content .kg-product-card-image {
     width: 100%;
-    height: auto;
-    aspect-ratio: 1/1;
-    object-fit: contain;
-    background: #ffffff !important;
-    border-radius: 1px;
-    margin: 0 !important;
-    flex: 0 0 auto;
-    display: block;
-    min-width: 100%;
-    transition: none !important;
-    animation: none !important;
+    height: 220px;
+    display: flex;
+    overflow: hidden;
+    border-bottom: 1px solid var(--color-border-light);
   }
   .dark .gh-content .kg-product-card-image {
-    opacity: 1;
+    border-color: var(--color-border-dark);
   }
-  
+
   @media (min-width: 768px) {
     .gh-content .kg-product-card-image {
+      width: 220px;
+      height: auto;
+      align-self: stretch;
+      border-bottom: none;
+      border-right: 1px solid var(--color-border-light);
       grid-column: 1;
       grid-row: 1 / span 4;
-      height: 280px;
     }
+    .dark .gh-content .kg-product-card-image {
+      border-right-color: var(--color-border-dark);
+    }
+  }
+
+  .gh-content .kg-product-card-image img {
+    flex: 1;
+    display: block;
+    width: 100%;
+    min-height: 100%;
+    object-fit: contain !important; /* Contain for product shots usually looks better */
+    background: #fff !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
   }
   
   .gh-content .kg-product-card-title {
     font-family: var(--font-serif) !important;
-    font-size: 1.25rem !important;
-    font-weight: 400 !important;
-    margin: 0 !important;
+    font-size: 1.15rem !important;
+    font-weight: 500 !important;
+    margin: 0 0 0.5rem 0 !important;
     color: var(--color-text-light) !important;
-    line-height: 1.3 !important;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 3 !important;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
+    line-height: 1.4 !important;
+    letter-spacing: 0.01em !important;
+    text-transform: none !important;
   }
   .dark .gh-content .kg-product-card-title {
-    color: var(--color-text-dark) !important;
+    color: #ffffff !important;
   }
   
   .gh-content .kg-product-card-description {
     font-size: 0.95rem;
-    color: #57534e;
+    color: #6a6462;
     line-height: 1.6;
-    margin-top: 0.5rem;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 3 !important;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
+    margin: 0.5rem 1.5rem 0 0 !important;
   }
-  .dark .gh-content .kg-product-card-description {
-    color: #a3a3a3;
+  @media (min-width: 768px) {
+    .gh-content .kg-product-card-description {
+      margin: 0.5rem 2rem 0 0 !important;
+    }
   }
   
   .gh-content .kg-product-card-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: #111110 !important;
+    background: #000 !important;
     color: #fff !important;
     height: 48px;
     padding: 0 1.5rem;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.15em;
     text-decoration: none !important;
-    border-radius: 1px;
-    margin-top: auto;
-    width: 100% !important;
-    box-sizing: border-box;
+    border-radius: 0;
+    margin: 1.5rem 0 1.5rem 1.5rem !important;
+    width: fit-content !important;
+    min-width: 200px;
+    transition: all 0.3s ease;
   }
-  .dark .gh-content .kg-product-card-button {
-    background: #fff !important;
-    color: #111110 !important;
-  }
-  
   @media (min-width: 768px) {
-    .gh-content .kg-product-card-button { width: 220px !important; }
+    .gh-content .kg-product-card-button {
+      margin: 1rem 0 2rem 0 !important;
+    }
   }
   
   /* Amazon Compliance: Force hide manually typed Prices & Ratings */
@@ -657,4 +661,73 @@
     transform: translateX(4px);
     color: var(--color-primary);
   }
-}
+
+  /* --- HIGH-END PRODUCT RIBBON (ELLE STYLE) --- */
+  .gh-content .gh-ribbon-card {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #fdfbfb !important;
+    border: 1px solid #f0e6e6 !important;
+    padding: 1rem 1.5rem !important;
+    margin: 2.5rem 0 !important;
+    border-radius: 2px !important;
+    gap: 1.5rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .gh-content .gh-ribbon-text {
+    font-family: var(--font-serif) !important;
+    font-size: 1.15rem !important;
+    color: #4A3F41 !important;
+    font-weight: 400 !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+    flex: 1 !important;
+  }
+
+  .gh-content .gh-ribbon-action {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    height: 38px !important;
+    padding: 0 1.5rem !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.15em !important;
+    text-decoration: none !important;
+    border-radius: 0 !important;
+    white-space: nowrap !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .gh-content .gh-ribbon-action:hover {
+    background-color: var(--color-primary) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  @media (max-width: 640px) {
+    .gh-content .gh-ribbon-card {
+      flex-direction: column !important;
+      align-items: center !important;
+      text-align: center !important;
+      padding: 1.5rem !important;
+      gap: 1.25rem !important;
+    }
+    .gh-content .gh-ribbon-action {
+      width: 100% !important;
+    }
+  }
+
+  .dark .gh-content .gh-ribbon-card {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+  }
+  .dark .gh-content .gh-ribbon-text {
+    color: #fff !important;
+  }
+} /* Closing @layer components */
