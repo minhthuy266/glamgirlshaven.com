@@ -98,7 +98,7 @@ export function Footer() {
                </div>
             </div>
             <div className="text-gray-400 text-[10px] italic leading-relaxed max-w-md text-left md:text-right border-l-2 md:border-l-0 md:border-r-2 border-primary/20 pl-4 md:pl-0 md:pr-4">
-              GlamGirls Haven is a participant in the Amazon Services LLC Associates Program. We provide expert, unbiased recommendations.
+              As an Amazon Associate I earn from qualifying purchases. We provide expert, unbiased recommendations.
             </div>
           </div>
           

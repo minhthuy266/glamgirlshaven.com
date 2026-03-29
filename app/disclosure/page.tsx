@@ -16,7 +16,7 @@ export default function AffiliateDisclosure() {
           <section>
             <h2 className="font-serif text-2xl mb-6">Our Relationship with Commerce</h2>
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
-              GlamGirls Haven is reader-supported. We participate in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com.
+              As an Amazon Associate I earn from qualifying purchases. GlamGirls Haven is reader-supported and also participates in other affiliate advertising programs designed to provide a means for sites to earn advertising fees by linking to affiliated sites.
             </p>
           </section>
 

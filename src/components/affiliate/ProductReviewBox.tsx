@@ -23,7 +23,7 @@ export function ProductReviewBox({
   pros,
   cons,
   affiliateLink,
-  buttonText = "Shop the Edit",
+  buttonText = "View on Amazon",
   badgeText,
 }: ProductReviewBoxProps) {
   return (
@@ -53,7 +53,7 @@ export function ProductReviewBox({
                 </svg>
               ))}
             </div>
-            <span className="text-[10px] uppercase tracking-widest font-bold text-gray-400 italic font-serif">Rating: {rating}/5</span>
+            <span className="text-[10px] uppercase tracking-widest font-bold text-gray-400 italic font-serif">Editor's Rating: {rating}/5</span>
           </div>
         </div>
 
@@ -62,7 +62,7 @@ export function ProductReviewBox({
           <div className="mb-8">
             <h3 className="text-3xl font-serif font-bold text-gray-900 dark:text-white mb-3 leading-tight tracking-tight">{title}</h3>
             <div className="flex items-baseline gap-4">
-              <span className="text-2xl font-serif italic text-primary">{price}</span>
+              <span className="text-2xl font-serif italic text-primary">Check Price on Amazon</span>
               <span className="text-[10px] uppercase tracking-widest font-bold text-gray-400">Curated Selection</span>
             </div>
           </div>
@@ -114,7 +114,7 @@ export function ProductReviewBox({
               </span>
             </a>
             <p className="text-center text-[9px] uppercase tracking-widest font-bold text-gray-400 mt-4">
-              *Prices are subject to change. Commissions may be earned.
+              As an Amazon Associate I earn from qualifying purchases.
             </p>
           </div>
         </div>
