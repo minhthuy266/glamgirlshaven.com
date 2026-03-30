@@ -95,6 +95,26 @@ export default async function PostPage({ params }: Props) {
     `src="${siteBase}$1`
   );
 
+  // 4b. Transform inline-styled ribbon cards into class-based HTML.
+  //     Ghost custom HTML blocks use ALL inline styles (display:flex, white-space:nowrap)
+  //     which beat any external CSS. We strip inline styles and add classes instead.
+  processedHtml = processedHtml.replace(
+    /<div\s+style="[^"]*display:\s*flex[^"]*"[^>]*>\s*<span\s+style="[^"]*"[^>]*>([\s\S]*?)<\/span>\s*<a\s+([^>]*href="[^"]*(?:amazon\.[a-z.]+|amzn\.to)[^"]*"[^>]*)style="[^"]*"([^>]*)>([\s\S]*?)<\/a>\s*<\/div>/gi,
+    (match, spanText, aBeforeStyle, aAfterStyle, linkText) => {
+      return `<div class="gh-ribbon-card"><span class="gh-ribbon-text">${spanText}</span><a ${aBeforeStyle} class="gh-ribbon-action" ${aAfterStyle}>${linkText}</a></div>`;
+    }
+  );
+
+  // 4c. Strip Ghost inline styles on product card containers so CSS classes win on mobile
+  processedHtml = processedHtml.replace(
+    /(<div\s[^>]*class="[^"]*kg-product-card-container[^"]*")[^>]*style="[^"]*"([^>]*>)/gi,
+    '$1$2'
+  );
+  processedHtml = processedHtml.replace(
+    /(<a\s[^>]*class="[^"]*kg-product-card-button[^"]*")[^>]*style="[^"]*"([^>]*>)/gi,
+    '$1$2'
+  );
+
   // 4. Open Amazon links in new tab with nofollow
   processedHtml = processedHtml.replace(
     /<a(\s[^>]*?)href="(https?:\/\/(?:www\.)?(?:amazon\.[a-z.]+|amzn\.to)\/[^"]*?)"([^>]*?)>/g,
@@ -160,6 +180,19 @@ export default async function PostPage({ params }: Props) {
     }
   });
   processedHtml = root.toString();
+
+  // Inject mobile overrides AFTER node-html-parser so the style tag is preserved.
+  // A <style> in the document body is parsed & applied by all modern browsers.
+  processedHtml += `<style>
+@media (max-width:768px){
+  .gh-ribbon-card{display:block!important;padding:1.25rem!important;}
+  .gh-ribbon-text{display:block!important;margin-bottom:.75rem!important;text-align:left!important;}
+  .gh-ribbon-action{display:block!important;width:100%!important;box-sizing:border-box!important;white-space:normal!important;height:auto!important;min-height:44px!important;padding:.75rem 1rem!important;line-height:1.4!important;text-align:center!important;}
+  .kg-product-card-container{display:flex!important;flex-direction:column!important;padding:1rem!important;gap:1rem!important;}
+  .kg-product-card-image{width:100%!important;height:200px!important;align-self:auto!important;border-right:none!important;border-bottom:1px solid #f2ebeb!important;grid-column:auto!important;grid-row:auto!important;}
+  .kg-product-card-button{display:block!important;width:100%!important;margin:.75rem 0 0 0!important;box-sizing:border-box!important;white-space:normal!important;height:auto!important;min-height:44px!important;padding:.75rem 1rem!important;line-height:1.4!important;text-align:center!important;}
+}
+</style>`;
 
   // JSON-LD Schema
   const siteUrl = 'https://glamgirlshaven.com';
