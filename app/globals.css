@@ -35,13 +35,8 @@
   100% { opacity: 1; transform: translateY(0); }
 }
 
-/* Post body images — optimize for zero-flicker scroll per instructions */
+/* Post body images */
 .gh-content img {
-  transform: translateZ(0);        /* force GPU layer */
-  -webkit-transform: translateZ(0);
-  will-change: auto;               /* chỉ hint khi cần */
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   /* Ngăn layout shift */
   height: auto;
   display: block;

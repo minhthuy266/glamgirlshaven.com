@@ -79,20 +79,16 @@ export default async function PostPage({ params }: Props) {
   // 2. Add decoding="async" to images that don't have it
   processedHtml = processedHtml.replace(/<img(?![^>]*decoding)/g, '<img decoding="async"');
 
-  // 3. Force stable dimensions style to prevent layout shifts
-  processedHtml = processedHtml.replace(/<img(?![^>]*style="[^"]*width)/g, '<img style="width:100%;height:auto;"');
+  // 3. (Style injection removed — handled properly by node-html-parser in step 5a)
 
   // 4. CLEAN UP ALL RESIZING PATHS (CRITICAL FIX FOR 500 ERRORS)
-  // This removes srcset and forces src to use the original image path.
-  processedHtml = processedHtml
-    .replace(/srcset="[^"]*"/gi, "") // Xóa sạch srcset
-    .replace(/\/content\/images\/size\/w\d+\//g, "/content/images/"); // Biến /size/w900/ thành ảnh gốc
+  // Removed redundant regex removal of srcset/sizes as it's now handled by node-html-parser.
 
-  // 3. Fix relative image URLs
-  const siteBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://glamgirlshaven.com';
+  // 3. Fix relative image URLs (Use GHOST API URL, not Site URL)
+  const ghostBase = (process.env.NEXT_PUBLIC_GHOST_API_URL || process.env.GHOST_API_URL || 'https://api.glamgirlshaven.com').replace(/\/$/, '');
   processedHtml = processedHtml.replace(
     /src="(\/content\/images\/)/g,
-    `src="${siteBase}$1`
+    `src="${ghostBase}$1`
   );
 
   // 4b. Transform inline-styled ribbon cards into class-based HTML.
@@ -169,11 +165,62 @@ export default async function PostPage({ params }: Props) {
     return `<h${level}${newAttrs}>${content}</h${level}>`;
   });
 
-  // 5. Fix Hydration Mismatch using node-html-parser
+  // 5. Fix Hydration Mismatch + CRITICAL mobile image fixes using node-html-parser
   const root = parse(processedHtml);
+
+  // 5a. Fix images for mobile: Simplify image tags to solve iOS Safari rendering bugs.
+  //     We REMOVE srcset and sizes because they often point to 404 thumbnails on the Ghost server,
+  //     or cause iOS Safari to calculate a 0px width on mobile viewports.
+  //     We also point src to the best available URL then let the browser handle it directly.
+  const allImgs = root.querySelectorAll('img');
+  allImgs.forEach(img => {
+    let bestUrl = img.getAttribute('src') || '';
+    const srcSet = img.getAttribute('srcset');
+    
+    // If we have a srcset, try to pick the largest available image.
+    if (srcSet) {
+      const candidates = srcSet.split(',').map(s => s.trim().split(' ')[0]);
+      if (candidates.length > 0) {
+        bestUrl = candidates[candidates.length - 1];
+      }
+    }
+
+    // Apply absolute URL if it's a relative path from Ghost.
+    // CRITICAL: We must use the Ghost API URL, NOT the public site URL, for images.
+    if (bestUrl && bestUrl.startsWith('/content/')) {
+      const ghostBase = process.env.NEXT_PUBLIC_GHOST_API_URL || process.env.GHOST_API_URL || 'https://api.glamgirlshaven.com';
+      // Ensure no trailing slash on base and leading slash on path
+      const base = ghostBase.replace(/\/$/, '');
+      bestUrl = `${base}${bestUrl}`;
+    }
+
+    img.removeAttribute('srcset');
+    img.removeAttribute('sizes');
+
+    // Use OUR proxy API instead of Ghost domain directly.
+    // This solves: 1. CORS issues, 2. SSL/Mixed Content blocks, 3. Bot-detection headers.
+    if (bestUrl && bestUrl.startsWith('http')) {
+      const proxiedSrc = `/api/proxy-image?url=${encodeURIComponent(bestUrl)}`;
+      img.setAttribute('src', proxiedSrc);
+    }
+
+    // Use natural dimensions from Ghost attributes for proper sizing.
+    // Small images (e.g. 350x350) should NOT be stretched to full width.
+    // Using max-width:100% lets small images stay small while large ones are responsive.
+    const naturalWidth = img.getAttribute('width');
+    const naturalHeight = img.getAttribute('height');
+    const widthStyle = naturalWidth ? `max-width:min(100%, ${naturalWidth}px)` : 'max-width:100%';
+    const heightStyle = naturalHeight && naturalWidth
+      ? `height:auto` // keep aspect ratio
+      : 'height:auto';
+    img.setAttribute('style', `${widthStyle};${heightStyle};display:block;background:#f9f9f9;`);
+    img.setAttribute('loading', 'eager'); 
+    img.setAttribute('decoding', 'async');
+  });
+
+  // 5b. Fix <p> containing block-level elements (hydration mismatch)
   const pTags = root.querySelectorAll('p');
   pTags.forEach(p => {
-    // If the p tag contains any block-level elements, it will break hydration. Change it to a div.
     if (p.querySelector('div, figure, ul, ol, li, h1, h2, h3, h4, h5, h6, blockquote, pre, table')) {
       p.tagName = 'div';
       p.setAttribute('class', 'ghost-p-wrapper text-text-light dark:text-gray-300 text-[17px] md:text-[19px] leading-[1.8] mb-8');
