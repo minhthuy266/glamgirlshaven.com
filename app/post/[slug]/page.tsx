@@ -204,16 +204,8 @@ export default async function PostPage({ params }: Props) {
       img.setAttribute('src', proxiedSrc);
     }
 
-    // Use natural dimensions from Ghost attributes for proper sizing.
-    // Small images (e.g. 350x350) should NOT be stretched to full width.
-    // Using max-width:100% lets small images stay small while large ones are responsive.
-    const naturalWidth = img.getAttribute('width');
-    const naturalHeight = img.getAttribute('height');
-    const widthStyle = naturalWidth ? `max-width:min(100%, ${naturalWidth}px)` : 'max-width:100%';
-    const heightStyle = naturalHeight && naturalWidth
-      ? `height:auto` // keep aspect ratio
-      : 'height:auto';
-    img.setAttribute('style', `${widthStyle};${heightStyle};display:block;background:#f9f9f9;`);
+    // Fixed height, auto width, centered
+    img.setAttribute('style', 'height:400px;width:auto;max-width:100%;display:block;margin:0 auto;object-fit:contain;background:#f9f9f9;');
     img.setAttribute('loading', 'eager'); 
     img.setAttribute('decoding', 'async');
   });
