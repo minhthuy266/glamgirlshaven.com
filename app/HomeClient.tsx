@@ -155,7 +155,7 @@ export default function HomeClient({
               </p>
             </div>
             <div className="hidden md:flex items-center gap-2">
-              <Link href="/category/all" className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary hover:text-text-light dark:hover:text-white transition-colors flex items-center gap-2">
+              <Link href="/category/editors-verdict" className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary hover:text-text-light dark:hover:text-white transition-colors flex items-center gap-2">
                 Explore The Entire Edit <ArrowRight size={14} />
               </Link>
             </div>
@@ -225,7 +225,7 @@ export default function HomeClient({
               );
             })}
             <Link
-              href="/category/all"
+              href="/category/editors-verdict"
               className="w-full flex flex-col items-center justify-center bg-stone-50 dark:bg-gray-900 border border-border-light dark:border-border-dark text-center hover:border-primary transition-all aspect-[4/5] rounded-sm group mb-6 lg:mb-0"
             >
               <div className="w-12 h-12 rounded-full border border-gray-200 dark:border-gray-800 flex items-center justify-center mb-4 group-hover:border-primary transition-colors">
@@ -301,13 +301,13 @@ export default function HomeClient({
                     </div>
                   </div>
 
-                  {/* Trending Sidebar widget to fill vertical space */}
+                  {/* Must-Read Edits — fallback to allPosts if masterclass has <5 posts */}
                   <div className="space-y-6 pt-6 border-t border-border-light dark:border-border-dark">
                     <h5 className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary flex items-center gap-2">
                        <TrendingUp size={14} /> Must-Read Edits
                     </h5>
                     <div className="space-y-6">
-                      {masterclassPosts.slice(3, 5).map((p, i) => (
+                      {(masterclassPosts.length > 3 ? masterclassPosts.slice(3, 5) : allPosts.filter(p => !masterclassPosts.slice(0,3).find(m => m.id === p.id)).slice(0, 2)).map((p, i) => (
                         <Link key={p.id} href={`/post/${p.slug}`} className="group flex gap-4 items-center">
                           <span className="font-serif text-3xl text-primary/20 font-bold">0{i+1}</span>
                           <div>
@@ -319,17 +319,23 @@ export default function HomeClient({
                     </div>
                   </div>
 
-                  {/* Popular Topics Cloud */}
+                  {/* Browse Categories */}
                   <div className="space-y-4 pt-6">
-                    <h5 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">Popular in Academy</h5>
+                    <h5 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">Browse Categories</h5>
                      <div className="flex flex-wrap gap-2">
-                        {['Acid Peels', 'Micro-needling', 'Double Cleansing', 'Retinal vs Retinol', 'Barrier Health'].map(tag => (
+                        {[
+                          { label: 'Skincare', href: '/category/skincare' },
+                          { label: 'Makeup', href: '/category/makeup' },
+                          { label: 'Haircare', href: '/category/haircare' },
+                          { label: 'Wellness', href: '/category/wellness' },
+                          { label: 'Amazon Finds', href: '/category/editors-verdict' },
+                        ].map(cat => (
                           <Link 
-                            key={tag} 
-                            href={`/category/skincare`}
+                            key={cat.href} 
+                            href={cat.href}
                             className="px-3 py-1.5 bg-stone-100 dark:bg-gray-800/50 text-[9px] font-bold uppercase tracking-widest text-text-light dark:text-gray-400 hover:text-primary transition-colors cursor-pointer border border-transparent hover:border-primary/20"
                           >
-                            {tag}
+                            {cat.label}
                           </Link>
                         ))}
                      </div>
